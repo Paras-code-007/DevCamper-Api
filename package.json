@@ -1,0 +1,22 @@
+{
+	"name": "devcamper-api",
+	"version": "1.0.0",
+	"description": "Devcamper Backend API",
+	"main": "server.js",
+	"scripts": {
+		"test": "echo \"Error: no test specified\" && exit 1",
+		"start": "NODE_ENV=production PORT=5000 node src/server.js;",
+		"dev": "nodemon src/server.js"
+	},
+	"keywords": [],
+	"author": {
+		"name": "Paras Arora",
+		"email": "paras.arora0025@gmail.com",
+		"url": "https://twitter.com/paras0025"
+	},
+	"license": "MIT",
+	"dependencies": {
+		"dotenv": "^8.2.0",
+		"express": "^4.17.1"
+	}
+}
