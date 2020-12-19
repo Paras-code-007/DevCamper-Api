@@ -30,14 +30,10 @@ const bootcampsRoute = require('./routes/bootcamps').router;
 const app = express();
 
 // Middlewares
-const logger = (req, res, next) => {
-	console.log(`${req.method}  ${req.protocol}://${req.host}${req.originalUrl}`);
-	// console.log(req);
-	req.hello = 'World';
-	next();
-};
+// const logger = require('./middlewares/logger');
+// app.use(logger);
+app.use(require('./middlewares/logger'));
 
-app.use(logger);
 // console.log(process.NODE_ENV); //undefined
 
 // Mount Routes
@@ -96,3 +92,4 @@ http://localhost:${PORT}`)
 );
 
 //! Router.use() requires a middleware function but got a Object
+//! express deprecated req.host: Use req.hostname instead src/middlewares/logger.js:2:54

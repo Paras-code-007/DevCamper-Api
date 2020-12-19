@@ -2,7 +2,7 @@
 // @route   GET /api/v1/bootcamps
 // @access  Public
 exports.getAllBootcamps = (req, res, next) => {
-	console.log(req.hello); //Prints World
+	// console.log(req.hello); //Prints World
 	res.status(200).json({
 		success: true,
 		data: null,
