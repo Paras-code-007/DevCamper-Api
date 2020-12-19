@@ -1,4 +1,4 @@
-const route = require('express').Router();
+const router = require('express').Router();
 const {
 	getAllBootcamps,
 	getBootcamp,
@@ -7,15 +7,17 @@ const {
 	deleteBootcamp,
 } = require('../controllers/bootcamp');
 
-route.get('/', getAllBootcamps);
+// new syntax
+router.route('/').get(getAllBootcamps).post(createBootcamp); //IRoute syntax for common route paths
 
-route.get('/:id', getBootcamp);
+router.get('/:id').get(getBootcamp).put(updateBootcamp).delete(deleteBootcamp);
 
-route.post('/', createBootcamp);
-
-route.put('/:id', updateBootcamp);
-
-route.delete('/:id', deleteBootcamp);
+//+OR
+// route.get('/', getAllBootcamps);
+// route.get('/:id', getBootcamp);
+// route.post('/', createBootcamp);
+// route.put('/:id', updateBootcamp);
+// route.delete('/:id', deleteBootcamp);
 
 module.exports = {
 	route,
