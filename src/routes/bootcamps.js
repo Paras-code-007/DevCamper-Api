@@ -10,7 +10,7 @@ const {
 // new syntax
 router.route('/').get(getAllBootcamps).post(createBootcamp); //IRoute syntax for common route paths
 
-router.get('/:id').get(getBootcamp).put(updateBootcamp).delete(deleteBootcamp);
+router.route('/:id').get(getBootcamp).put(updateBootcamp).delete(deleteBootcamp);
 
 //+OR
 // route.get('/', getAllBootcamps);
@@ -20,6 +20,6 @@ router.get('/:id').get(getBootcamp).put(updateBootcamp).delete(deleteBootcamp);
 // route.delete('/:id', deleteBootcamp);
 
 module.exports = {
-	route,
+	router,
 };
 // module.exports = route;

@@ -25,10 +25,19 @@ const express = require('express');
 const PORT = process.env.PORT || 3000;
 
 // Route files
-const bootcampsRoute = require('./routes/bootcamps').route;
+const bootcampsRoute = require('./routes/bootcamps').router;
 
 const app = express();
 
+// Middlewares
+const logger = (req, res, next) => {
+	console.log(`${req.method}  ${req.protocol}://${req.host}${req.originalUrl}`);
+	// console.log(req);
+	req.hello = 'World';
+	next();
+};
+
+app.use(logger);
 // console.log(process.NODE_ENV); //undefined
 
 // Mount Routes
