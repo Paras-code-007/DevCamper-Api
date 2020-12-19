@@ -96,18 +96,25 @@ app.get('/teststatus', function (req, res, next) {
 	});
 });
 
-app.listen(
+const server = app.listen(
 	3000,
 	console.log(`server running in ${process.env.NODE_ENV} mode on port ${PORT}
 http://localhost:${PORT}`)
 );
 
+// console.log(server);
+
 // handles unahndle promise rejections in whole server
 process.on('unhandledRejection', (err, promise) => {
-	// console.log('Error: ', err.message);
 	console.log(err.name);
-	console.log(err.message);
+	console.log('Error: ', err.message);
+	// console.log(err.message);
 	// console.log(err.stack);
+	// Close Server and Exit
+	server.close((err) => {
+		console.log(err);
+		process.exit(1);
+	});
 });
 
 //! Router.use() requires a middleware function but got a Object

@@ -13,6 +13,7 @@ async function ConnectDb() {
 	} catch (err) {
 		console.log('Error Connecting to the Database');
 		console.log(`${err.name} :${err.message}`);
+		process.exit(1); //creash when db not connected
 	}
 }
 
