@@ -32,7 +32,11 @@ const app = express();
 // Middlewares
 // const logger = require('./middlewares/logger');
 // app.use(logger);
-app.use(require('./middlewares/logger'));
+//+ app.use(require('./middlewares/logger'));  //using morgan instead
+
+if (process.env.NODE_ENV === 'development') {
+	app.use(require('morgan')('dev'));
+}
 
 // console.log(process.NODE_ENV); //undefined
 
