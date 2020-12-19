@@ -22,4 +22,4 @@ router.route('/:id').get(getBootcamp).put(updateBootcamp).delete(deleteBootcamp)
 module.exports = {
 	router,
 };
-// module.exports = route;
+// module.exports = router;

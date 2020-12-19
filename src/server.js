@@ -1,5 +1,6 @@
 if (process.env.NODE_ENV != 'production') {
 	//means it is development
+	// load env vars
 	const dotenv = require('dotenv').config({ path: './config/config.env' }); //takes .env file in root path by default if path not given
 	console.log(dotenv);
 	//.config loads the environment variable by parsing and convert to js object and return it
@@ -23,13 +24,19 @@ console.log(process.env.PORT, process.env.NODE_ENV, process.env.secret); //to ch
 const express = require('express');
 //load config vars
 const PORT = process.env.PORT || 3000;
+const ConnectDb = require('./connectdb');
 
 // Route files
 const bootcampsRoute = require('./routes/bootcamps').router;
 
+// Middlewares
+
+// Connect to Database
+ConnectDb();
+
 const app = express();
 
-// Middlewares
+// Middlewares Used
 // const logger = require('./middlewares/logger');
 // app.use(logger);
 //+ app.use(require('./middlewares/logger'));  //using morgan instead
@@ -94,6 +101,14 @@ app.listen(
 	console.log(`server running in ${process.env.NODE_ENV} mode on port ${PORT}
 http://localhost:${PORT}`)
 );
+
+// handles unahndle promise rejections in whole server
+process.on('unhandledRejection', (err, promise) => {
+	// console.log('Error: ', err.message);
+	console.log(err.name);
+	console.log(err.message);
+	// console.log(err.stack);
+});
 
 //! Router.use() requires a middleware function but got a Object
 //! express deprecated req.host: Use req.hostname instead src/middlewares/logger.js:2:54
