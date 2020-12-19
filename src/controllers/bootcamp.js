@@ -7,7 +7,9 @@ exports.getAllBootcamps = (req, res, next) => {
 		success: true,
 		data: null,
 		msg: 'show all bootcamps',
+		// hello: req.hello,
 	});
+	//? keys having undefined values are not passed in res.json or are automatically removed from response body or removed when json is parsed
 };
 
 // @desc    Get all bootcamps
