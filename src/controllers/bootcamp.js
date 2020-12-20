@@ -1,3 +1,5 @@
+const Bootcamp = require('../models/Bootcamp');
+
 // @desc    Get all bootcamps
 // @route   GET /api/v1/bootcamps
 // @access  Public
@@ -26,10 +28,12 @@ exports.getBootcamp = (req, res, next) => {
 // @desc    POST all bootcamps
 // @route   POST /api/v1/bootcamps
 // @access  Private
-exports.createBootcamp = (req, res, next) => {
-	res.status(200).json({
+exports.createBootcamp = async (req, res, next) => {
+	// console.log(req.body);
+	const data = Bootcamp.create(req.body);
+	res.status(201).json({
 		success: true,
-		data: null,
+		data,
 		msg: 'created new bootcamp',
 	});
 };

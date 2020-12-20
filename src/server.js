@@ -45,6 +45,9 @@ if (process.env.NODE_ENV === 'development') {
 	app.use(require('morgan')('dev'));
 }
 
+//Body parser
+app.use(express.json());
+
 // console.log(process.NODE_ENV); //undefined
 
 // Mount Routes

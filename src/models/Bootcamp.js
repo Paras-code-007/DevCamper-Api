@@ -17,7 +17,7 @@ const BootcampSchema = new mongoose.Schema({
 	website: {
 		type: String,
 		match: [
-			`https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&//=]*)`,
+			/https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&//=]*)/,
 			'Please add a valid URL with http/https',
 		],
 	},
@@ -27,7 +27,7 @@ const BootcampSchema = new mongoose.Schema({
 	},
 	email: {
 		type: String,
-		match: ['/^w+@[a-zA-Z_]+?.[a-zA-Z]{2,3}$/', 'please add a valid email address'],
+		match: [/^w+@[a-zA-Z_]+?.[a-zA-Z]{2,3}$/, 'please add a valid email address'],
 	},
 	address: {
 		type: String,
@@ -38,11 +38,11 @@ const BootcampSchema = new mongoose.Schema({
 		type: {
 			type: String,
 			enum: ['Point'],
-			required: true,
+			// required: true,
 		},
 		coordinates: {
 			type: [Number],
-			required: true,
+			// required: true,
 			index: '2dsphere',
 		},
 		// from mapQuest API/Geocoder
@@ -57,7 +57,7 @@ const BootcampSchema = new mongoose.Schema({
 		type: [String],
 		required: true,
 		enum: [
-			'Web Devlopment',
+			'Web Development',
 			'Mobile Development',
 			'UI/UX',
 			'Data Science',
