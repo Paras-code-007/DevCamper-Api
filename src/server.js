@@ -97,7 +97,7 @@ app.get('/teststatus', function (req, res, next) {
 });
 
 const server = app.listen(
-	3000,
+	PORT,
 	console.log(`server running in ${process.env.NODE_ENV} mode on port ${PORT}
 http://localhost:${PORT}`)
 );

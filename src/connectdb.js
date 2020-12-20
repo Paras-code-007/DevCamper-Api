@@ -10,6 +10,8 @@ async function ConnectDb() {
 		});
 		// console.log(Connection); //contains all info regarding connection even usernmae and pass
 		console.log(`connected to db ${Connection.connection.host}:${Connection.connection.port}`);
+
+		Connection.connection.on('error', console.error.bind(console, 'connection error:'));
 	} catch (err) {
 		console.log('Error Connecting to the Database');
 		console.log(`${err.name} :${err.message}`);
