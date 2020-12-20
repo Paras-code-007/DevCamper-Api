@@ -9,7 +9,7 @@ async function ConnectDb() {
 			useFindAndModify: true, //?
 		});
 		// console.log(Connection); //contains all info regarding connection even usernmae and pass
-		console.log(`connected to db ${Connection.connection.host}:${Connection.connection.port}`);
+		console.log('\x1b[36m%s\x1b[0m', `connected to db ${Connection.connection.host}:${Connection.connection.port}`);
 
 		Connection.connection.on('error', console.error.bind(console, 'connection error:'));
 	} catch (err) {

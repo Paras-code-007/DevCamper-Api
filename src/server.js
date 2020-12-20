@@ -101,21 +101,26 @@ app.get('/teststatus', function (req, res, next) {
 
 const server = app.listen(
 	PORT,
-	console.log(`server running in ${process.env.NODE_ENV} mode on port ${PORT}
-http://localhost:${PORT}`)
+	console.log(
+		'\x1b[32m%s\x1b[0m',
+		`server running in ${process.env.NODE_ENV} mode on port ${PORT}
+http://localhost:${PORT}`
+	)
 );
 
 // console.log(server);
 
-// handles unahndle promise rejections in whole server
+// handles unahndle promise rejections in whole server: since mongodb and all these libraries are promised based therfore error related to any unhandled promise (promise whose catch is not there will be handled)
 process.on('unhandledRejection', (err, promise) => {
-	console.log(err.name);
-	console.log('Error: ', err.message);
+	console.log('\x1b[31m%s\x1b[0m', err.name);
+	console.log('\x1b[31m%s\x1b[0m', `Error: ${err.message}`);
 	// console.log(err.message);
 	// console.log(err.stack);
+
 	// Close Server and Exit
+
 	server.close((err) => {
-		console.log(err);
+		console.log(err); //undefined at closing of server on any unhandled rejection is coming becuse of this
 		process.exit(1);
 	});
 });

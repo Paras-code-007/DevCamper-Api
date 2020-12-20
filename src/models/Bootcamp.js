@@ -24,10 +24,15 @@ const BootcampSchema = new mongoose.Schema({
 	phone: {
 		type: String,
 		maxlength: [20, 'phone number cannot be greater than 20 digits'],
+		required: true,
 	},
 	email: {
 		type: String,
-		match: [/^w+@[a-zA-Z_]+?.[a-zA-Z]{2,3}$/, 'please add a valid email address'],
+		match: [
+			/^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/,
+			'please add a valid email address',
+		],
+		required: true,
 	},
 	address: {
 		type: String,
@@ -104,3 +109,5 @@ const Bootcamp = mongoose.model('Bootcamp', BootcampSchema);
 console.log(Bootcamp);
 
 module.exports = Bootcamp;
+
+// !MongoError Error:  E11000 duplicate key error collection: devcamper.bootcamps index: name_1 dup key: { name: "Devworks Bootcamp" }

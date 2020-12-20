@@ -30,12 +30,21 @@ exports.getBootcamp = (req, res, next) => {
 // @access  Private
 exports.createBootcamp = async (req, res, next) => {
 	// console.log(req.body);
-	const data = Bootcamp.create(req.body);
-	res.status(201).json({
-		success: true,
-		data,
-		msg: 'created new bootcamp',
-	});
+	try {
+		const data = await Bootcamp.create(req.body);
+		res.status(201).json({
+			success: true,
+			data,
+			msg: 'created new bootcamp',
+		});
+	} catch (err) {
+		console.log('\x1b[31m%s\x1b[0m', `Error name: ${err.name}`);
+		console.log('\x1b[31m%s\x1b[0m', `Error message: ${err.message}`);
+		res.status(400).json({
+			success: false,
+			error: err.name,
+		});
+	}
 };
 
 // @desc    PUT all bootcamps
