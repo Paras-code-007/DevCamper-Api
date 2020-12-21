@@ -16,14 +16,17 @@ exports.getAllBootcamps = async (req, res, next) => {
 		});
 		//? keys having undefined values are not passed in res.json or are automatically removed from response body or removed when json is parsed
 	} catch (err) {
-		console.log(`Error name: ${err.name}`);
+		/* console.log(`Error name: ${err.name}`);
 		console.log(`Error message: ${err.message}`);
 		res.status(400).json({
 			success: false,
 			data: null,
 			error: err.name,
 			msg: 'some error occured',
-		});
+		}); */
+		if (err) {
+			next(err);
+		}
 	}
 };
 
@@ -48,14 +51,18 @@ exports.getBootcamp = async (req, res, next) => {
 			msg: `get bootcamp ${req.params.id}`,
 		});
 	} catch (err) {
-		console.log(`Error name: ${err.name}`);
+		/* console.log(`Error name: ${err.name}`);
 		console.log(`Error message: ${err.message}`);
 		res.status(400).json({
 			success: false,
 			error: err.name,
 			data: null,
 			msg: `some error occured/ invalid id format`,
-		});
+		}); */
+		// error handled by next middleware errorHandler.js
+		if (err) {
+			next(err);
+		}
 	}
 };
 
@@ -80,7 +87,7 @@ exports.createBootcamp = async (req, res, next) => {
 		res.status(400).json({
 			success: false,
 			error: err.name,
-			msg: 'error occured',
+			msg: 'error occured/ duplicate name key',
 		});
 	}
 	// later we create error handler (asynchandle) and remove try catch so we dont have to handle error using trycatch

@@ -30,6 +30,7 @@ const ConnectDb = require('./connectdb');
 const bootcampsRoute = require('./routes/bootcamps').router;
 
 // Middlewares
+const errorHandler = require('./middlewares/errorHandler');
 
 // Connect to Database
 ConnectDb();
@@ -53,6 +54,7 @@ app.use(express.json());
 // Mount Routes
 // app.use('/api/v1/bootcamps', require('./routes/bootcamps'));
 app.use('/api/v1/bootcamps', bootcampsRoute);
+app.use(errorHandler); //insted of using express error handler use our own made error handler
 
 // testing **********************************************************
 
