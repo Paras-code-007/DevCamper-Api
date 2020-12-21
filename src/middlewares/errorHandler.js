@@ -11,10 +11,18 @@ function errorHandler(err, req, res, next) {
 			msg: 'some error occured',
         }); */
 		// +OR
-		console.log(err.stack);
+		/* console.log(err.stack);
 		res.status(500).json({
 			success: false,
 			error: err.message,
+        }); */
+		console.log(`Error name: ${err.name}`);
+		console.log(`Error message: ${err.message}`);
+		console.log(`Error stack: ${err.stack}`);
+		res.status(err.statusCode || 500).json({
+			success: false,
+			error: err.name || 'Error',
+			message: err.message || 'Server Error',
 		});
 	}
 }

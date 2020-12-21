@@ -1,4 +1,5 @@
 const Bootcamp = require('../models/Bootcamp');
+const ErrorResponse = require('../utils/ErrorResponse_class');
 
 // @desc    Get all bootcamps
 // @route   GET /api/v1/bootcamps
@@ -25,7 +26,8 @@ exports.getAllBootcamps = async (req, res, next) => {
 			msg: 'some error occured',
 		}); */
 		if (err) {
-			next(err);
+			// next(err);
+			next(new ErrorResponse('Error Fetching bootcamps', 404));
 		}
 	}
 };
@@ -38,12 +40,13 @@ exports.getBootcamp = async (req, res, next) => {
 	try {
 		const data = await Bootcamp.findById(req.params.id);
 		if (!data) {
-			return res.status(400).json({
+			/* return res.status(400).json({
 				success: false,
 				error: 'inavlid id',
 				data,
 				// msg: `some error occured`,
-			});
+			}); */
+			return next(new ErrorResponse(`Bootcamp not found with id of ${req.params.id}: Invalid Id error`, 404));
 		}
 		res.status(200).json({
 			success: true,
@@ -61,7 +64,8 @@ exports.getBootcamp = async (req, res, next) => {
 		}); */
 		// error handled by next middleware errorHandler.js
 		if (err) {
-			next(err);
+			// next(err);
+			next(new ErrorResponse(`Bootcamp not found with id of ${req.params.id}: Invalid Id format`, 404));
 		}
 	}
 };
