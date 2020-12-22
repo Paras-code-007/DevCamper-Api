@@ -37,45 +37,45 @@ exports.getAllBootcamps = async (req, res, next) => {
 // @desc    Get all bootcamps
 // @route   GET /api/v1/bootcamps/:id
 // @access  Public
-exports.getBootcamp = async (req, res, next) => {
+exports.getBootcamp = asyncHandler(async (req, res, next) => {
 	// console.log(req.params.id);
-	try {
-		const data = await Bootcamp.findById(req.params.id);
-		if (!data) {
-			/* return res.status(400).json({
-				success: false,
-				error: 'inavlid id',
-				data,
-				// msg: `some error occured`,
-			}); */
-			// return next(err)
-			return next(new ErrorResponse(`Bootcamp not found with id of ${req.params.id}: Invalid Id error`, 404));
-			// err = new Error();
-			// err.name = 'CastError';
-			// return next(err);
-		}
-		res.status(200).json({
-			success: true,
-			data,
-			msg: `get bootcamp ${req.params.id}`,
-		});
-	} catch (err) {
-		/* console.log(`Error name: ${err.name}`);
-		console.log(`Error message: ${err.message}`);
-		res.status(400).json({
+	const data = await Bootcamp.findById(req.params.id);
+	if (!data) {
+		/* return res.status(400).json({
 			success: false,
-			error: err.name,
-			data: null,
-			msg: `some error occured/ invalid id format`,
+			error: 'inavlid id',
+			data,
+			// msg: `some error occured`,
 		}); */
-		// error handled by next middleware errorHandler.js
-		if (err) {
-			// next(err);
-			// next(new ErrorResponse(`Bootcamp not found with id of ${req.params.id}: Invalid Id format`, 404));
-			next(err);
-		}
+		// return next(err)
+		return next(new ErrorResponse(`Bootcamp not found with id of ${req.params.id}: Invalid Id error`, 404));
+		// err = new Error();
+		// err.name = 'CastError';
+		// return next(err);
 	}
-};
+	res.status(200).json({
+		success: true,
+		data,
+		msg: `get bootcamp ${req.params.id}`,
+	});
+	// try {
+	// } catch (err) {
+	// 	// console.log(`Error name: ${err.name}`);
+	// 	// console.log(`Error message: ${err.message}`);
+	// 	// res.status(400).json({
+	// 	// 	success: false,
+	// 	// 	error: err.name,
+	// 	// 	data: null,
+	// 	// 	msg: `some error occured/ invalid id format`,
+	// 	// });
+	// 	// error handled by next middleware errorHandler.js
+	// 	if (err) {
+	// 		// next(err);
+	// 		// next(new ErrorResponse(`Bootcamp not found with id of ${req.params.id}: Invalid Id format`, 404));
+	// 		next(err);
+	// 	}
+	// }
+});
 
 // @desc    POST all bootcamps
 // @route   POST /api/v1/bootcamps
@@ -110,73 +110,73 @@ exports.createBootcamp = asyncHandler(async (req, res, next) => {
 // @desc    PUT all bootcamps
 // @route   PUT /api/v1/bootcamps/:id
 // @access  Private
-exports.updateBootcamp = async (req, res, next) => {
-	try {
-		const data = await Bootcamp.findByIdAndUpdate(req.params.id, req.body, {
-			runValidators: true,
-			new: true,
-			useFindAndModify: false,
-		});
-		if (!data) {
-			// return res.status(400).json({
-			// 	success: false,
-			// 	data: null,
-			// 	msg: `Invalid id ${req.params.id}`,
-			// 	error: 'some error occured',
-			// });
-			return next(new ErrorResponse(`Bootcamp not found with id of ${req.params.id}: Invalid Id error`, 404));
-		}
-		res.status(200).json({
-			success: true,
-			data,
-			msg: `Updated bootcamp ${req.params.id}`,
-		});
-	} catch (err) {
-		// console.log(`Error name: ${err.name}`);
-		// console.log(`Error message: ${err.message}`);
-		// res.status(400).json({
+exports.updateBootcamp = asyncHandler(async (req, res, next) => {
+	const data = await Bootcamp.findByIdAndUpdate(req.params.id, req.body, {
+		runValidators: true,
+		new: true,
+		useFindAndModify: false,
+	});
+	if (!data) {
+		// return res.status(400).json({
 		// 	success: false,
 		// 	data: null,
-		// 	error: 'invalid id format',
-		// 	msg: `bootcamp ${req.params.id} does not exist`,
+		// 	msg: `Invalid id ${req.params.id}`,
+		// 	error: 'some error occured',
 		// });
-		next(err);
+		return next(new ErrorResponse(`Bootcamp not found with id of ${req.params.id}: Invalid Id error`, 404));
 	}
-};
+	res.status(200).json({
+		success: true,
+		data,
+		msg: `Updated bootcamp ${req.params.id}`,
+	});
+	// try {
+	// } catch (err) {
+	// 	// console.log(`Error name: ${err.name}`);
+	// 	// console.log(`Error message: ${err.message}`);
+	// 	// res.status(400).json({
+	// 	// 	success: false,
+	// 	// 	data: null,
+	// 	// 	error: 'invalid id format',
+	// 	// 	msg: `bootcamp ${req.params.id} does not exist`,
+	// 	// });
+	// 	next(err);
+	// }
+});
 
 // @desc    DELETE all bootcamps
 // @route   DELETE /api/v1/bootcamps/:id
 // @access  Private
-exports.deleteBootcamp = async (req, res, next) => {
-	try {
-		const data = await Bootcamp.findByIdAndDelete(req.params.id);
-		// console.log(data);
-		if (!data) {
-			// return res.status(400).json({
-			// 	success: false,
-			// 	data: null,
-			// 	msg: `Invalid id ${req.params.id}, bootcamp does not exist`,
-			// 	error: 'some error occured',
-			// });
-			return next(new ErrorResponse(`Bootcamp not found with id of ${req.params.id}: Invalid Id error`, 404));
-		}
-		res.status(200).json({
-			success: true,
-			data,
-			msg: `Deleted bootcamp ${req.params.id}`,
-		});
-	} catch (err) {
-		// console.log(`Error name: ${err.name}`);
-		// console.log(`Error message: ${err.message}`);
-		// res.status(400).json({
+exports.deleteBootcamp = asyncHandler(async (req, res, next) => {
+	const data = await Bootcamp.findByIdAndDelete(req.params.id);
+	// console.log(data);
+	if (!data) {
+		// return res.status(400).json({
 		// 	success: false,
 		// 	data: null,
-		// 	error: 'invalid id format',
-		// 	msg: `bootcamp ${req.params.id} does not exist`,
+		// 	msg: `Invalid id ${req.params.id}, bootcamp does not exist`,
+		// 	error: 'some error occured',
 		// });
-		next(err);
+		return next(new ErrorResponse(`Bootcamp not found with id of ${req.params.id}: Invalid Id error`, 404));
 	}
-};
+	res.status(200).json({
+		success: true,
+		data,
+		msg: `Deleted bootcamp ${req.params.id}`,
+	});
+	// try {
+	// } catch (err) {
+	// 	// console.log(`Error name: ${err.name}`);
+	// 	// console.log(`Error message: ${err.message}`);
+	// 	// res.status(400).json({
+	// 	// 	success: false,
+	// 	// 	data: null,
+	// 	// 	error: 'invalid id format',
+	// 	// 	msg: `bootcamp ${req.params.id} does not exist`,
+	// 	// });
+	// 	next(err);
+	// }
+});
 
 // Errors ********************************************************
 

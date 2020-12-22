@@ -21,7 +21,7 @@ function errorHandler(err, req, res, next) {
 	console.log(`Error message: ${err.message}`);
 	// console.log(`Error stack: ${err.stack}`);
 	console.log(`Error reason: ${err.reason}`);
-	console.log(err);
+	// console.log(err);
 
 	let error = { data: null, ...err };
 	// in spread operator only first level properties are copied (properties of mongoose extended class of error)
