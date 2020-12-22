@@ -27,7 +27,8 @@ exports.getAllBootcamps = async (req, res, next) => {
 		}); */
 		if (err) {
 			// next(err);
-			next(new ErrorResponse('Error Fetching bootcamps', 404));
+			// next(new ErrorResponse('Error Fetching bootcamps', 404));
+			next(err);
 		}
 	}
 };
@@ -46,7 +47,11 @@ exports.getBootcamp = async (req, res, next) => {
 				data,
 				// msg: `some error occured`,
 			}); */
+			// return next(err)
 			return next(new ErrorResponse(`Bootcamp not found with id of ${req.params.id}: Invalid Id error`, 404));
+			// err = new Error();
+			// err.name = 'CastError';
+			// return next(err);
 		}
 		res.status(200).json({
 			success: true,
@@ -65,7 +70,8 @@ exports.getBootcamp = async (req, res, next) => {
 		// error handled by next middleware errorHandler.js
 		if (err) {
 			// next(err);
-			next(new ErrorResponse(`Bootcamp not found with id of ${req.params.id}: Invalid Id format`, 404));
+			// next(new ErrorResponse(`Bootcamp not found with id of ${req.params.id}: Invalid Id format`, 404));
+			next(err);
 		}
 	}
 };
