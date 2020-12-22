@@ -1,5 +1,6 @@
 const Bootcamp = require('../models/Bootcamp');
 const ErrorResponse = require('../utils/ErrorResponse_class');
+const asyncHandler = require('../utils/asyncHandler');
 
 // @desc    Get all bootcamps
 // @route   GET /api/v1/bootcamps
@@ -79,15 +80,10 @@ exports.getBootcamp = async (req, res, next) => {
 // @desc    POST all bootcamps
 // @route   POST /api/v1/bootcamps
 // @access  Private
-exports.createBootcamp = async (req, res, next) => {
+exports.createBootcamp = asyncHandler(async (req, res, next) => {
 	// console.log(req.body);
-	try {
-		const data = await Bootcamp.create(req.body);
-		res.status(201).json({
-			success: true,
-			data,
-			msg: 'created new bootcamp',
-		});
+	/* try {
+
 	} catch (err) {
 		// handled error will not be displayed red
 		// console.log('\x1b[31m%s\x1b[0m', `Error name: ${err.name}`);
@@ -101,9 +97,15 @@ exports.createBootcamp = async (req, res, next) => {
 		// 	msg: 'error occured/ duplicate name key',
 		// });
 		next(err);
-	}
+	} */
+	const data = await Bootcamp.create(req.body);
+	res.status(201).json({
+		success: true,
+		data,
+		msg: 'created new bootcamp',
+	});
 	// later we create error handler (asynchandle) and remove try catch so we dont have to handle error using trycatch
-};
+});
 
 // @desc    PUT all bootcamps
 // @route   PUT /api/v1/bootcamps/:id
