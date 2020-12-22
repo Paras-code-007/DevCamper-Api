@@ -92,13 +92,15 @@ exports.createBootcamp = async (req, res, next) => {
 		// handled error will not be displayed red
 		// console.log('\x1b[31m%s\x1b[0m', `Error name: ${err.name}`);
 		// console.log('\x1b[31m%s\x1b[0m', `Error message: ${err.message}`);
-		console.log(`Error name: ${err.name}`);
-		console.log(`Error message: ${err.message}`);
-		res.status(400).json({
-			success: false,
-			error: err.name,
-			msg: 'error occured/ duplicate name key',
-		});
+		//
+		// console.log(`Error name: ${err.name}`);
+		// console.log(`Error message: ${err.message}`);
+		// res.status(400).json({
+		// 	success: false,
+		// 	error: err.name,
+		// 	msg: 'error occured/ duplicate name key',
+		// });
+		next(err);
 	}
 	// later we create error handler (asynchandle) and remove try catch so we dont have to handle error using trycatch
 };
@@ -114,12 +116,13 @@ exports.updateBootcamp = async (req, res, next) => {
 			useFindAndModify: false,
 		});
 		if (!data) {
-			return res.status(400).json({
-				success: false,
-				data: null,
-				msg: `Invalid id ${req.params.id}`,
-				error: 'some error occured',
-			});
+			// return res.status(400).json({
+			// 	success: false,
+			// 	data: null,
+			// 	msg: `Invalid id ${req.params.id}`,
+			// 	error: 'some error occured',
+			// });
+			return next(new ErrorResponse(`Bootcamp not found with id of ${req.params.id}: Invalid Id error`, 404));
 		}
 		res.status(200).json({
 			success: true,
@@ -127,14 +130,15 @@ exports.updateBootcamp = async (req, res, next) => {
 			msg: `Updated bootcamp ${req.params.id}`,
 		});
 	} catch (err) {
-		console.log(`Error name: ${err.name}`);
-		console.log(`Error message: ${err.message}`);
-		res.status(400).json({
-			success: false,
-			data: null,
-			error: 'invalid id format',
-			msg: `bootcamp ${req.params.id} does not exist`,
-		});
+		// console.log(`Error name: ${err.name}`);
+		// console.log(`Error message: ${err.message}`);
+		// res.status(400).json({
+		// 	success: false,
+		// 	data: null,
+		// 	error: 'invalid id format',
+		// 	msg: `bootcamp ${req.params.id} does not exist`,
+		// });
+		next(err);
 	}
 };
 
@@ -146,12 +150,13 @@ exports.deleteBootcamp = async (req, res, next) => {
 		const data = await Bootcamp.findByIdAndDelete(req.params.id);
 		// console.log(data);
 		if (!data) {
-			return res.status(400).json({
-				success: false,
-				data: null,
-				msg: `Invalid id ${req.params.id}, bootcamp does not exist`,
-				error: 'some error occured',
-			});
+			// return res.status(400).json({
+			// 	success: false,
+			// 	data: null,
+			// 	msg: `Invalid id ${req.params.id}, bootcamp does not exist`,
+			// 	error: 'some error occured',
+			// });
+			return next(new ErrorResponse(`Bootcamp not found with id of ${req.params.id}: Invalid Id error`, 404));
 		}
 		res.status(200).json({
 			success: true,
@@ -159,14 +164,15 @@ exports.deleteBootcamp = async (req, res, next) => {
 			msg: `Deleted bootcamp ${req.params.id}`,
 		});
 	} catch (err) {
-		console.log(`Error name: ${err.name}`);
-		console.log(`Error message: ${err.message}`);
-		res.status(400).json({
-			success: false,
-			data: null,
-			error: 'invalid id format',
-			msg: `bootcamp ${req.params.id} does not exist`,
-		});
+		// console.log(`Error name: ${err.name}`);
+		// console.log(`Error message: ${err.message}`);
+		// res.status(400).json({
+		// 	success: false,
+		// 	data: null,
+		// 	error: 'invalid id format',
+		// 	msg: `bootcamp ${req.params.id} does not exist`,
+		// });
+		next(err);
 	}
 };
 
