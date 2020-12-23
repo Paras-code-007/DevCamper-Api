@@ -1,10 +1,10 @@
 const fs = require('fs');
-const ConnectDb = require('./src/connectdb');
 const dotenv = require('dotenv').config({ path: './config/config.env' });
+const ConnectDb = require('./src/connectdb');
+const Bootcamp = require('./src/models/Bootcamp');
 
 // console.log(dotenv);
 (async () => {
-	const Bootcamp = await require('./src/models/Bootcamp');
 	await ConnectDb();
 
 	// Read Json files
