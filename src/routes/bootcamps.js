@@ -5,12 +5,15 @@ const {
 	createBootcamp,
 	updateBootcamp,
 	deleteBootcamp,
+	getBootcampByRadius,
 } = require('../controllers/bootcamp');
 
 // new syntax
 router.route('/').get(getAllBootcamps).post(createBootcamp); //IRoute syntax for common route paths
 
 router.route('/:id').get(getBootcamp).put(updateBootcamp).delete(deleteBootcamp);
+
+router.get('/radius/:zipcode/:distance', getBootcampByRadius);
 
 //+OR
 // route.get('/', getAllBootcamps);

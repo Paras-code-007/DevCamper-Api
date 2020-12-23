@@ -1,3 +1,4 @@
+const geocoder = require('../utils/geocoder');
 const Bootcamp = require('../models/Bootcamp');
 const ErrorResponse = require('../utils/ErrorResponse_class');
 const asyncHandler = require('../utils/asyncHandler');
@@ -178,6 +179,24 @@ exports.deleteBootcamp = asyncHandler(async (req, res, next) => {
 	// }
 });
 
+// @desc    Get bootcamps by radius
+// @route   GET /api/v1/bootcamps/radius/:zipcode/:distance
+// @access  Private
+exports.getBootcampByRadius = asyncHandler(async (req, res, next) => {
+	const loc = await geocoder.geocode(req.params.zipcode);
+	const radius = req.params.distance / 3963;
+	const data = await Bootcamp.find({
+		location: { $geoWithin: { $centerSphere: [[loc[0].longitude, loc[0].latitude], radius] } },
+	});
+	// console.log(data);
+	res.status(200).json({
+		success: true,
+		count: data.length,
+		data,
+		msg: `get bootcamps within radius ${req.params.distance}`,
+	});
+});
+
 // Errors ********************************************************
 
 // can do exports.function or can use module.exports= an object with all property functions
@@ -214,3 +233,8 @@ Error: Converting circular structure to JSON
 // const data = await findByIdAndDelete(req.params.id);
 // !Error name: MongooseError Error message: `Model.findByIdAndDelete()` cannot run without a model as `this`. Make sure you are calling `MyModel.findByIdAndDelete()` where `MyModel` is a Mongoose model.
 // Solution=> const data = await BootCamp.findByIdAndDelete(req.params.id);
+
+// !Error Connecting to the Database MongooseServerSelectionError :Could not connect to any servers in your MongoDB Atlas cluster. One common reason is that you're trying to access the database from an IP that isn't whitelisted. Make sure your current IP address is on your Atlas cluster's IP whitelist: https://docs.atlas.mongodb.com/security-whitelist/
+
+// const data = await Bootcamp.find({location: { $geoWithin: { $centerSphere: [[loc[0].longitude, loc[0].latitude], radius] } },});
+// ! Error name: MongoError Error message: Point must only contain numeric elements
