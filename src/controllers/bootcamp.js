@@ -8,8 +8,16 @@ const asyncHandler = require('../utils/asyncHandler');
 // @access  Public
 exports.getAllBootcamps = async (req, res, next) => {
 	// console.log(req.hello); //Prints World
+	// console.log(req.query);
+	// console.log(req.query.averageSalary.lte);
+	// console.log(typeof req.query.averageSalary);
+	let querystr = JSON.stringify(req.query);
+	// console.log(querystr);
+	querystr = querystr.replace(/\b(gt|gte|lt|lte|in)\b/g, (match) => `$${match}`); //{{URI}}/api/v1/bootcamps?averageCost[lte]=10000&careers[in]=Business
+	// console.log(querystr);
+	querystr = JSON.parse(querystr);
 	try {
-		const data = await Bootcamp.find();
+		const data = await Bootcamp.find(querystr);
 		res.status(200).json({
 			success: true,
 			count: data.length,
