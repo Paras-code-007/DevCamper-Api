@@ -12,12 +12,28 @@ exports.getAllBootcamps = async (req, res, next) => {
 	// console.log(req.query.averageSalary.lte);
 	// console.log(typeof req.query.averageSalary);
 	let querystr = JSON.stringify(req.query);
+	const removefeilds = ['select', 'sort'];
 	// console.log(querystr);
 	querystr = querystr.replace(/\b(gt|gte|lt|lte|in)\b/g, (match) => `$${match}`); //{{URI}}/api/v1/bootcamps?averageCost[lte]=10000&careers[in]=Business
 	// console.log(querystr);
 	querystr = JSON.parse(querystr);
+	removefeilds.forEach((feild) => delete querystr[feild]);
+	// console.log(querystr);
 	try {
-		const data = await Bootcamp.find(querystr);
+		let data = Bootcamp.find(querystr);
+		if (req.query.select) {
+			selectfeilds = req.query.select.split(',').join(' ');
+			// console.log(selectfeilds);
+			data = data.select(selectfeilds);
+		}
+		if (req.query.sort) {
+			sortfeilds = req.query.sort.split(',').join(' ');
+			// console.log(sortfeilds);
+			data = data.sort(sortfeilds);
+		} else {
+			data = data.sort('-createdAt');
+		}
+		data = await data;
 		res.status(200).json({
 			success: true,
 			count: data.length,
