@@ -1,18 +1,12 @@
-if (!(process.argv[2] && process.argv[3])) {
-	console.log(`command=> node seeder.js <bootcamp/course> -a/-d`);
+if (!process.argv[2]) {
+	console.log('command=> node seedall.js -a/-d');
 	process.exit(0);
 }
-
 const fs = require('fs');
 const dotenv = require('dotenv').config({ path: './config/config.env' });
 const ConnectDb = require('./src/connectdb');
-String.prototype.toProperCase = function () {
-	return this.replace(/\w\S*/g, function (txt) {
-		return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();
-	});
-};
-// const speceficModel = process.argv[2].toProperCase();
-const speceficModel = require(`./src/models/${process.argv[2].toProperCase()}`);
+const Bootcamp = require('./src/models/Bootcamp');
+const Course = require('./src/models/Course');
 
 // console.log(dotenv);
 (async () => {
@@ -20,14 +14,17 @@ const speceficModel = require(`./src/models/${process.argv[2].toProperCase()}`);
 	// console.log(process.argv[2], process.argv[3]);
 	// console.log(typeof process.argv[2], typeof process.argv[3]);
 	// Read Json files
-	const buffer = fs.readFileSync(`./_data/${process.argv[2]}s.json`, { encoding: 'utf-8' });
+	const buffer1 = fs.readFileSync('./_data/bootcamps.json', { encoding: 'utf-8' });
+	const buffer2 = fs.readFileSync('./_data/courses.json', { encoding: 'utf-8' });
 	// console.log(buffer);
-	objects = JSON.parse(buffer);
+	bootcampObjects = JSON.parse(buffer1);
+	courseObjects = JSON.parse(buffer2);
 	// console.log(objects);
 
 	async function createDocuments() {
 		try {
-			await speceficModel.create(objects);
+			await Bootcamp.create(bootcampObjects);
+			await Course.create(courseObjects);
 		} catch (err) {
 			console.log('Error name', err.name);
 			console.log('Error message', err.message);
@@ -40,7 +37,8 @@ const speceficModel = require(`./src/models/${process.argv[2].toProperCase()}`);
 
 	async function deleteDocuments() {
 		try {
-			await speceficModel.deleteMany();
+			await Bootcamp.deleteMany();
+			await Course.deleteMany();
 		} catch (err) {
 			console.log('Error name', err.name);
 			console.log('Error message', err.message);
@@ -51,8 +49,8 @@ const speceficModel = require(`./src/models/${process.argv[2].toProperCase()}`);
 		process.exit(0);
 	}
 
-	if (process.argv[3] === '-a') await createDocuments();
-	else if (process.argv[3] === '-d') await deleteDocuments();
+	if (process.argv[2] === '-a') await createDocuments();
+	else if (process.argv[2] === '-d') await deleteDocuments();
 	// if (process.argv[2] == undefined) process.exit(0);
 	else process.exit(0);
 })();
