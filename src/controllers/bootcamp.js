@@ -12,7 +12,7 @@ exports.getAllBootcamps = async (req, res, next) => {
 	// console.log(req.query.averageSalary.lte);
 	// console.log(typeof req.query.averageSalary);
 	let querystr = JSON.stringify(req.query);
-	const removefeilds = ['select', 'sort'];
+	const removefeilds = ['select', 'sort', 'page', 'limit'];
 	// console.log(querystr);
 	querystr = querystr.replace(/\b(gt|gte|lt|lte|in)\b/g, (match) => `$${match}`); //{{URI}}/api/v1/bootcamps?averageCost[lte]=10000&careers[in]=Business
 	// console.log(querystr);
@@ -21,22 +21,50 @@ exports.getAllBootcamps = async (req, res, next) => {
 	// console.log(querystr);
 	try {
 		let data = Bootcamp.find(querystr);
+		// for select query
 		if (req.query.select) {
 			selectfeilds = req.query.select.split(',').join(' ');
 			// console.log(selectfeilds);
 			data = data.select(selectfeilds);
 		}
+		// for sort query
 		if (req.query.sort) {
 			sortfeilds = req.query.sort.split(',').join(' ');
 			// console.log(sortfeilds);
 			data = data.sort(sortfeilds);
 		} else {
+			//default
 			data = data.sort('-createdAt');
 		}
+		// for pagination and limit query
+		// console.log(req.query.page, req.query.limit);  //req.query.key are string therfore used parseint
+		// console.log(typeof req.query.page, typeof req.query.limit);
+		let page = parseInt(req.query.page, 10) || 1;
+		let limit = parseInt(req.query.limit, 10) || 10;
+		let pagination = {};
+		let prevPage = (page - 1) * limit;
+		let nextPage = page * limit;
+		let totaldocs = await Bootcamp.countDocuments();
+		if (prevPage > 0) {
+			pagination.prev = {
+				page: page - 1,
+				limit,
+			};
+		}
+		if (nextPage < totaldocs) {
+			pagination.next = {
+				page: page + 1,
+				limit,
+			};
+		}
+		let skipfeilds = (page - 1) * limit;
+		data = data.skip(skipfeilds).limit(limit);
+
 		data = await data;
 		res.status(200).json({
 			success: true,
 			count: data.length,
+			pagination,
 			data,
 			msg: 'show all bootcamps',
 			// hello: req.hello,
