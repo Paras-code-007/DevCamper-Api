@@ -39,11 +39,11 @@ exports.getAllBootcamps = async (req, res, next) => {
 		// for pagination and limit query
 		// console.log(req.query.page, req.query.limit);  //req.query.key are string therfore used parseint
 		// console.log(typeof req.query.page, typeof req.query.limit);
-		let page = parseInt(req.query.page, 10) || 1;
-		let limit = parseInt(req.query.limit, 10) || 10;
+		const page = parseInt(req.query.page, 10) || 1;
+		const limit = parseInt(req.query.limit, 10) || 10;
 		let pagination = {};
-		let prevPage = (page - 1) * limit;
-		let nextPage = page * limit;
+		const prevPage = (page - 1) * limit;
+		const nextPage = page * limit;
 		let totaldocs = await Bootcamp.countDocuments();
 		if (prevPage > 0) {
 			pagination.prev = {
