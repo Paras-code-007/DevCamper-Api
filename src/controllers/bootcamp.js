@@ -20,7 +20,7 @@ exports.getAllBootcamps = async (req, res, next) => {
 	removefeilds.forEach((feild) => delete querystr[feild]);
 	// console.log(querystr);
 	try {
-		let data = Bootcamp.find(querystr);
+		let data = Bootcamp.find(querystr).populate('courses', 'title description');
 		// for select query
 		if (req.query.select) {
 			selectfeilds = req.query.select.split(',').join(' ');

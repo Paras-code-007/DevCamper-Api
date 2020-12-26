@@ -11,9 +11,12 @@ exports.getCourses = asyncHandler(async function (req, res, next) {
 	if (req.params.bootcampId) {
 		query = Course.find({
 			bootcamp: req.params.bootcampId,
-		});
+		}).populate('bootcamp', 'name description');
 	} else {
-		query = Course.find();
+		query = Course.find().populate({
+			path: 'bootcamp', //schema feild to populate
+			select: 'name description',
+		});
 	}
 	let pagination;
 	const data = await query;
