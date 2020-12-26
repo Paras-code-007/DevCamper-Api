@@ -8,6 +8,12 @@ const {
 	getBootcampByRadius,
 } = require('../controllers/bootcamp');
 
+// Include Other Resource Routers
+const courseRouter = require('./courses');
+
+// Reroute into other resource router
+router.use('/:bootcampId/courses', courseRouter); //means mount this route to the course router
+
 // new syntax
 router.route('/').get(getAllBootcamps).post(createBootcamp); //IRoute syntax for common route paths
 
