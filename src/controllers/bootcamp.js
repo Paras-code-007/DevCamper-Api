@@ -201,7 +201,9 @@ exports.updateBootcamp = asyncHandler(async (req, res, next) => {
 // @route   DELETE /api/v1/bootcamps/:id
 // @access  Private
 exports.deleteBootcamp = asyncHandler(async (req, res, next) => {
-	const data = await Bootcamp.findByIdAndDelete(req.params.id);
+	// const data = await Bootcamp.findByIdAndDelete(req.params.id);  //pre remove middleware not work with findbyIdanddelete
+	// const data = await Bootcamp.findByIdAndRemove(req.params.id);  //not work either (pre remove event not triggerred)
+	const data = await Bootcamp.findById(req.params.id); //not work either (pre remove event not triggerred)
 	// console.log(data);
 	if (!data) {
 		// return res.status(400).json({
@@ -212,9 +214,11 @@ exports.deleteBootcamp = asyncHandler(async (req, res, next) => {
 		// });
 		return next(new ErrorResponse(`Bootcamp not found with id of ${req.params.id}: Invalid Id error`, 404));
 	}
+	deletedbootcamp = data;
+	data.remove();
 	res.status(200).json({
 		success: true,
-		data,
+		data: deletedbootcamp,
 		msg: `Deleted bootcamp ${req.params.id}`,
 	});
 	// try {

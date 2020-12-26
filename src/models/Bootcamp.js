@@ -154,6 +154,14 @@ BootcampSchema.virtual('courses', {
 	justOne: false, //for multiple relationship (one to many)/array
 });
 
+// delete related courses when a bootcamp is deleted
+BootcampSchema.pre('remove', async function (next) {
+	await this.model('Course').deleteMany({
+		bootcamp: this._id,
+	});
+	next();
+});
+
 // compiling the schema into a model class
 const Bootcamp = mongoose.model('Bootcamp', BootcampSchema);
 console.log(Bootcamp);
