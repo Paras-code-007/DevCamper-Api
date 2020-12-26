@@ -28,6 +28,7 @@ const ConnectDb = require('./connectdb');
 
 // Route files
 const bootcampsRoute = require('./routes/bootcamps').router;
+const coursesRoute = require('./routes/courses');
 
 // Middlewares
 const errorHandler = require('./middlewares/errorHandler');
@@ -54,6 +55,7 @@ app.use(express.json());
 // Mount Routes
 // app.use('/api/v1/bootcamps', require('./routes/bootcamps'));
 app.use('/api/v1/bootcamps', bootcampsRoute);
+app.use('/api/v1/courses', coursesRoute);
 app.use(errorHandler); //insted of using express error handler use our own made error handler
 
 // testing **********************************************************
