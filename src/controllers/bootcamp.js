@@ -1,4 +1,5 @@
 const geocoder = require('../utils/geocoder');
+const path = require('path');
 const Bootcamp = require('../models/Bootcamp');
 const ErrorResponse = require('../utils/ErrorResponse_class');
 const asyncHandler = require('../utils/asyncHandler');
@@ -251,6 +252,64 @@ exports.getBootcampByRadius = asyncHandler(async (req, res, next) => {
 		data,
 		msg: `get bootcamps within radius ${req.params.distance}`,
 	});
+});
+
+// @desc    Upload bootcamp photo
+// @route   POST /api/v1/bootcamps/:id/photo
+// @access  Private
+exports.uploadPhoto = asyncHandler(async (req, res, next) => {
+	// console.log(req.files);
+
+	const bootcamp = await Bootcamp.findById(req.params.id);
+
+	if (!bootcamp) {
+		return next(new ErrorResponse(`Bootcamp not found with id ${req.params.id}`, 404));
+	}
+
+	if (!req.files) {
+		return next(new ErrorResponse('Please upload a file', 400));
+	}
+	const file = req.files.file;
+
+	if (!file.mimetype.startsWith('image')) {
+		return next(new ErrorResponse('Please upload a image as a file', 400));
+	}
+
+	if (file.size > process.env.MAX_FILE_UPLOAD) {
+		return next(
+			new ErrorResponse(`Please upload a image less than size: ${process.env.MAX_FILE_UPLOAD / 1024}kb`, 400)
+		);
+	}
+
+	// file.name = `photo_${bootcamp.id}`;
+	file.name = `photo_${bootcamp.id}${path.parse(file.name).ext}`;
+	// console.log(path.parse(file.name));
+	// console.log(file.name);
+	// console.log(file);
+	// console.log(req.headers);
+	// console.log(req.headers['content-type']);
+	// __dirname, `../../images/${file.name}.${file.mimetype.split('/')[1]}`
+	// path.join(__dirname, `../../images/${file.name}`)
+	file.mv(`${process.env.FILE_UPLOAD_PATH}/${file.name}`, async function (err) {
+		if (err) {
+			console.log('Error name', err.name);
+			console.log('Error message', err.message);
+			// return res.status(500).send(err.name);
+			return next(new ErrorResponse('Error in uploading file, please try again', 500));
+		}
+
+		const data = await Bootcamp.findByIdAndUpdate(req.params.id, { photo: file.name });
+
+		// res.send('File uploaded!');
+		res.status(200).json({
+			success: true,
+			// data: data.photo,
+			data: file.name,
+			msg: 'File successfully uploaded',
+		});
+	});
+
+	// file.name= req.params.id
 });
 
 // Errors ********************************************************

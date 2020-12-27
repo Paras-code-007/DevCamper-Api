@@ -22,6 +22,7 @@ console.log(process.env.PORT, process.env.NODE_ENV, process.env.secret); //to ch
 */
 
 const express = require('express');
+const path = require('path');
 //load config vars
 const PORT = process.env.PORT || 3000;
 const ConnectDb = require('./connectdb');
@@ -32,6 +33,7 @@ const coursesRoute = require('./routes/courses');
 
 // Middlewares
 const errorHandler = require('./middlewares/errorHandler');
+const fileUpload = require('express-fileupload');
 
 // Connect to Database
 ConnectDb();
@@ -50,7 +52,13 @@ if (process.env.NODE_ENV === 'development') {
 //Body parser
 app.use(express.json());
 
+// file upload
+app.use(fileUpload());
+
 // console.log(process.NODE_ENV); //undefined
+
+// set static folder(mount directory to a path)
+app.use('/public', express.static(path.join(__dirname, '../public')));
 
 // Mount Routes
 // app.use('/api/v1/bootcamps', require('./routes/bootcamps'));
