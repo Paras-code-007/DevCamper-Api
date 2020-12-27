@@ -6,7 +6,7 @@ async function ConnectDb() {
 			useNewUrlParser: true,
 			useUnifiedTopology: true,
 			useCreateIndex: true, //?
-			useFindAndModify: true, //?
+			useFindAndModify: false, //?
 		});
 		// console.log(Connection); //contains all info regarding connection even usernmae and pass
 		console.log('\x1b[36m%s\x1b[0m', `connected to db ${Connection.connection.host}:${Connection.connection.port}`);
@@ -27,4 +27,5 @@ module.exports = ConnectDb;
 /*
 !(node:41636) DeprecationWarning: current URL string parser is deprecated, and will be removed in a future version. To use the new parser, pass option { useNewUrlParser: true } to MongoClient.connect.
 !(node:41636) DeprecationWarning: current Server Discovery and Monitoring engine is deprecated, and will be removed in a future version. To use the new Server Discover and Monitoring engine, pass option { useUnifiedTopology: true } to the MongoClient constructor.
+!(node:79531) DeprecationWarning: Mongoose: `findOneAndUpdate()` and `findOneAndDelete()` without the `useFindAndModify` option set to false are deprecated. See: https://mongoosejs.com/docs/deprecations.html#findandmodify
 */

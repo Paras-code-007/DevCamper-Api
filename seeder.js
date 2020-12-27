@@ -34,7 +34,7 @@ const speceficModel = require(`./src/models/${process.argv[2].toProperCase()}`);
 			process.exit(1);
 		}
 
-		console.log('\x1b[1m\x1b[7m\x1b[32m%s\x1b[0m', ' Documents created !!');
+		console.log('\x1b[1m\x1b[7m\x1b[32m%s\x1b[0m', ' Documents created !! ');
 		process.exit(0);
 	}
 
@@ -47,7 +47,7 @@ const speceficModel = require(`./src/models/${process.argv[2].toProperCase()}`);
 			process.exit(1);
 		}
 
-		console.log('\x1b[1m\x1b[7m\x1b[31m%s\x1b[0m', ' deleted !!');
+		console.log('\x1b[1m\x1b[7m\x1b[31m%s\x1b[0m', ' Documents deleted !! ');
 		process.exit(0);
 	}
 

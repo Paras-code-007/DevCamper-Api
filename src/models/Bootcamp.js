@@ -82,6 +82,7 @@ const BootcampSchema = new mongoose.Schema(
 			min: [1, 'Raing cannot be less than 1'],
 		},
 		averageCost: Number,
+		totalCost: Number,
 		photo: {
 			type: String, //just gonna be the filename data upload process will be handle by multer
 			default: 'no-photo.jpg', //for default photo we will supply this from our file system
@@ -103,7 +104,7 @@ const BootcampSchema = new mongoose.Schema(
 			default: false,
 		},
 		// courses: {
-		// 	type: [Object],
+		// 	type: [String],
 		// },
 		// not get created because when courses are added having specefic bootcamp courseid is not saved in bootcamp
 		createdAt: {
@@ -146,6 +147,7 @@ BootcampSchema.pre('save', async function (next) {
 });
 
 // Reverse Populate with virtuals(create a nonpersistent feild)
+//!Error: Virtual path "courses" conflicts with a real path in the schema
 BootcampSchema.virtual('courses', {
 	//feildtoBeCreated, optionsForRelationship
 	ref: 'Course',
