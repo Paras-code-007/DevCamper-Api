@@ -66,6 +66,10 @@ app.use('/api/v1/bootcamps', bootcampsRoute);
 app.use('/api/v1/courses', coursesRoute);
 app.use(errorHandler); //insted of using express error handler use our own made error handler
 
+app.get('/favicon.ico', (req, res, next) => {
+	res.sendFile(__dirname + '/favicon.ico');
+});
+
 // testing **********************************************************
 
 app.get('/testpath', function (req, res, next) {

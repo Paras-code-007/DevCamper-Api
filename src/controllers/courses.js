@@ -10,29 +10,35 @@ const Bootcamp = require('../models/Bootcamp');
 exports.getCourses = asyncHandler(async function (req, res, next) {
 	let query;
 	if (req.params.bootcampId) {
-		query = Course.find({
+		const course = Course.find({
 			bootcamp: req.params.bootcampId,
 		}).populate('bootcamp', 'name description');
-	} else {
-		query = Course.find().populate({
-			path: 'bootcamp', //schema feild to populate
-			select: 'name description',
+
+		if (!course) {
+			return next(new ErrorResponse('no data found', 500));
+		}
+		return res.status(200).json({
+			success: true,
+			data: course,
+			msg: `Get course with id ${req.params.bootcampId}`,
 		});
+	} else {
+		// query = Course.find().populate({
+		// 	path: 'bootcamp', //schema feild to populate
+		// 	select: 'name description',
+		// });
+		res.status(200).json(res.advanceResults);
 	}
-	let pagination;
-	const data = await query;
+	// let pagination;
+	// const data = await query;
 
-	if (!data) {
-		return next(new ErrorResponse('no data found', 500));
-	}
-
-	res.status(200).json({
-		success: true,
-		count: data.length,
-		data,
-		pagination,
-		msg: req.params.bootcampId ? `show all courses in bootcamp ${req.params.bootcampId}` : 'show all courses',
-	});
+	// res.status(200).json({
+	// 	success: true,
+	// 	count: data.length,
+	// 	data,
+	// 	pagination,
+	// 	msg: req.params.bootcampId ? `show all courses in bootcamp ${req.params.bootcampId}` : 'show all courses',
+	// });
 });
 
 // @desc    Get single courses
