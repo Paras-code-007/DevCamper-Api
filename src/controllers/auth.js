@@ -18,7 +18,7 @@ exports.register = asyncHandler(async (req, res, next) => {
 		role,
 	});
 
-	const token = user.getSignedJwtToken();
+	// const token = user.getSignedJwtToken();
 	// console.log(token);
 
 	// not working
@@ -32,14 +32,15 @@ exports.register = asyncHandler(async (req, res, next) => {
 	user.password = undefined;
 
 	// at register sent token means after register user is logged in
-	res.status(201).json({
-		success: true,
-		data: user,
-		token,
-		msg: `registered user successfully with token`,
-	});
+	// res.status(201).json({
+	// 	success: true,
+	// 	data: user,
+	// 	token,
+	// 	msg: `registered user successfully with token`,
+	// });
 	//+OR
-	// sendTokenResponse(user, 201, res);
+	// Login after register
+	sendTokenResponse(user, 201, res, true);
 });
 
 // @desc    Login a User when user is registered but logout
@@ -78,12 +79,26 @@ exports.login = asyncHandler(async (req, res, next) => {
 		token,
 		msg: `Logined user successfully`,
 	}); */
-	sendTokenResponse(user, 200, res);
+	sendTokenResponse(user, 200, res, false);
+});
+
+// @desc    Get the current loggined User/Me(Personal Profile)
+// @route   GET /api/v1/auth/me
+// @access  Private
+exports.getMe = asyncHandler(async (req, res, next) => {
+	// const user = req.user;
+	//+OR
+	const user = await User.findById(req.user.id);
+	res.status(200).json({
+		success: true,
+		data: user,
+		msg: `${user.name} Profile`,
+	});
 });
 
 // Get Token from model, create cookie and send response
 // not hoisted but still works before before the file is fully executed before request comes to any of the above path functions
-const sendTokenResponse = function (user, statusCode, res) {
+const sendTokenResponse = function (user, statusCode, res, isPathRegister) {
 	const token = user.getSignedJwtToken();
 
 	const cookieOptions = {
@@ -93,9 +108,12 @@ const sendTokenResponse = function (user, statusCode, res) {
 		secure: process.env.NODE_ENV === 'production' ? true : false,
 	};
 
-	res.status(200).cookie('DevcamperToken', token, cookieOptions).json({
-		success: true,
-		token,
-		msg: `Logined user successfully`,
-	});
+	res.status(statusCode)
+		.cookie('DevcamperToken', token, cookieOptions)
+		.json({
+			success: true,
+			data: isPathRegister ? user : undefined,
+			token,
+			msg: `${isPathRegister ? 'Registered' : 'Logined'} user successfully`,
+		});
 };

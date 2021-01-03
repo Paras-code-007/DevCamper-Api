@@ -46,3 +46,12 @@ exports.checkIfLogin = asyncHandler(async function (req, res, next) {
 		return next(new ErrorResponse('Not authorize to access this route => token not valid', 401));
 	}
 });
+
+exports.authorize = (...roles) => {
+	return function (req, res, next) {
+		if (!roles.includes(req.user.role)) {
+			return next(new ErrorResponse(`${req.user.role} is not authorized to access this route`, 403));
+		}
+		next();
+	};
+};

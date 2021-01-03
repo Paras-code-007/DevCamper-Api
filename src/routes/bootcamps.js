@@ -10,7 +10,7 @@ const {
 } = require('../controllers/bootcamp');
 const Bootcamp = require('../models/Bootcamp');
 const advanceResults = require('../middlewares/advanceResults');
-const { checkIfLogin } = require('../middlewares/auth');
+const { checkIfLogin, authorize } = require('../middlewares/auth');
 
 // Include Other Resource Routers
 const courseRouter = require('./courses');
@@ -22,11 +22,18 @@ router.use('/:bootcampId/courses', courseRouter); //means mount this route to th
 router
 	.route('/')
 	.get(advanceResults(Bootcamp, 'courses', 'title description'), getAllBootcamps)
-	.post(checkIfLogin, createBootcamp); //IRoute syntax for common route paths
+	.post(checkIfLogin, authorize('Admin', 'Publisher'), createBootcamp); //IRoute syntax for common route paths
 
-router.route('/:id').get(getBootcamp).put(checkIfLogin, updateBootcamp).delete(checkIfLogin, deleteBootcamp);
+router
+	.route('/:id')
+	.get(getBootcamp)
+	.put(checkIfLogin, authorize('Admin', 'Publisher'), updateBootcamp)
+	.delete(checkIfLogin, authorize('Admin', 'Publisher'), deleteBootcamp);
 
-router.route('/:id/photo').post(checkIfLogin, uploadPhoto).put(checkIfLogin, uploadPhoto);
+router
+	.route('/:id/photo')
+	.post(checkIfLogin, authorize('Admin', 'Publisher'), uploadPhoto)
+	.put(checkIfLogin, authorize('Admin', 'Publisher'), uploadPhoto);
 
 router.get('/radius/:zipcode/:distance', getBootcampByRadius);
 
