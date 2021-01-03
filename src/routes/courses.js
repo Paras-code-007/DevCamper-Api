@@ -1,6 +1,7 @@
 const router = require('express').Router({ mergeParams: true });
 const { getCourses, getCourse, addCourse, updateCourse, deleteCourse } = require('../controllers/courses');
 const advanceResults = require('../middlewares/advanceResults');
+const { checkIfLogin } = require('../middlewares/auth');
 const Course = require('../models/Course');
 
 router
@@ -13,8 +14,8 @@ router
 		advanceResults(Course, 'bootcamp', 'name description'),
 		getCourses
 	)
-	.post(addCourse);
+	.post(checkIfLogin, addCourse);
 
-router.route('/:id').get(getCourse).put(updateCourse).delete(deleteCourse);
+router.route('/:id').get(getCourse).put(checkIfLogin, updateCourse).delete(checkIfLogin, deleteCourse);
 
 module.exports = router;
