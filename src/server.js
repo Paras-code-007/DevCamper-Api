@@ -35,6 +35,7 @@ const authRoute = require('./routes/auth');
 // Middlewares
 const errorHandler = require('./middlewares/errorHandler');
 const fileUpload = require('express-fileupload');
+const cookieParser = require('cookie-parser');
 
 // Connect to Database
 ConnectDb();
@@ -55,6 +56,9 @@ app.use(express.json());
 
 // file upload
 app.use(fileUpload());
+
+// cookie Parser
+app.use(cookieParser());
 
 // console.log(process.NODE_ENV); //undefined
 

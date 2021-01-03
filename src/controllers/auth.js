@@ -69,7 +69,7 @@ exports.login = asyncHandler(async (req, res, next) => {
 	// login successful
 	const token = user.getSignedJwtToken();
 
-	// user.password = undefined;
+	// console.log(req.cookies); //[Object: null prototype] {}
 
 	res.status(201).json({
 		success: true,
