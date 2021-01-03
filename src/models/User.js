@@ -53,12 +53,19 @@ UserSchema.pre('save', async function (next) {
 UserSchema.methods.getSignedJwtToken = function () {
 	// synchronous with default algorithm
 	// secret gets base64 encoded before token generation
-	let token = jwt.sign({ id: this._id, iat: Date.now() }, process.env.JWT_SECRET, {
-		expiresIn: process.env.JWT_EXPIRE,
-		subject: 'some@user.com',
-		issuer: 'DevcamperSecAssociate',
-		audience: this.role,
-	});
+	let token = jwt.sign(
+		{
+			id: this._id,
+			// iat: Date.now(),  //automatically created and since its default value is date.now therfore all token created of the same user will be differrent because of differrent timestamps
+		},
+		process.env.JWT_SECRET,
+		{
+			expiresIn: process.env.JWT_EXPIRE,
+			subject: 'some@user.com',
+			issuer: 'DevcamperSecAssociate',
+			audience: this.role,
+		}
+	);
 
 	//+ Using RSA aLgo
 	/* const fs = require('fs');
@@ -77,6 +84,13 @@ UserSchema.methods.getSignedJwtToken = function () {
 	}); */
 	// console.log(token);
 	return token;
+};
+
+// Match Password send by user
+UserSchema.methods.matchPassword = async function (passwordEntered) {
+	// console.log(passwordEntered);
+	// console.log(this);
+	return await bcrypt.compare(passwordEntered, this.password);
 };
 
 const User = mongoose.model('User', UserSchema);
