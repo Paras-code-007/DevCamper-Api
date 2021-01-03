@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
 const bcrypt = require('bcrypt');
-
+const jwt = require('jsonwebtoken');
 const UserSchema = new mongoose.Schema({
 	name: {
 		type: String,
@@ -34,6 +34,7 @@ const UserSchema = new mongoose.Schema({
 	},
 });
 
+// Encrypt password using bcrypt
 UserSchema.pre('save', async function (next) {
 	// this.password;
 	try {
@@ -47,6 +48,41 @@ UserSchema.pre('save', async function (next) {
 	next();
 });
 
+// Sign JWT and return
+// statics are called on model and methods are called on objects/document created on a model
+UserSchema.methods.getSignedJwtToken = function () {
+	// synchronous with default algorithm
+	// secret gets base64 encoded before token generation
+	let token = jwt.sign({ id: this._id, iat: Date.now() }, process.env.JWT_SECRET, {
+		expiresIn: process.env.JWT_EXPIRE,
+		subject: 'some@user.com',
+		issuer: 'DevcamperSecAssociate',
+		audience: this.role,
+	});
+
+	//+ Using RSA aLgo
+	/* const fs = require('fs');
+	const privateKey = fs.readFileSync(__dirname + '/../../private.key', 'utf8');
+	const publicKey = fs.readFileSync(__dirname + '/../../public.key', 'utf8');
+
+	console.log(privateKey);
+	console.log(process.env.RSA_PRIVATEKEY);
+
+	let token = jwt.sign({ id: this._id, iat: Date.now() }, privateKey, {
+		algorithm: 'RS256',
+		expiresIn: process.env.JWT_EXPIRE,
+		subject: 'some@user.com',
+		issuer: 'DevcamperSecAssociate',
+		audience: this.role,
+	}); */
+	// console.log(token);
+	return token;
+};
+
 const User = mongoose.model('User', UserSchema);
 console.log(User);
 module.exports = User;
+
+// !for RS256 algo
+// !Error name: Error Error message: error:0909006C:PEM routines:get_name:no start line Error reason: no start line
+// !need RSA keys which start with a header and end with footer, therfore errors says it cant read header

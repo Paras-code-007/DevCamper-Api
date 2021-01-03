@@ -4,3 +4,5 @@ config/config.env
 images
 /public/uploads
 favicon.ico
+private.key
+public.key

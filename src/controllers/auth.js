@@ -18,6 +18,9 @@ exports.register = asyncHandler(async (req, res, next) => {
 		role,
 	});
 
+	const token = user.getSignedJwtToken();
+	// console.log(token);
+
 	// not working
 	// delete user['password'];
 	// delete user.password;
@@ -31,5 +34,7 @@ exports.register = asyncHandler(async (req, res, next) => {
 	res.status(201).json({
 		success: true,
 		data: user,
+		token,
+		msg: `registered user successfully with token`,
 	});
 });
