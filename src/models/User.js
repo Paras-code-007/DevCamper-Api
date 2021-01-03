@@ -52,7 +52,7 @@ UserSchema.pre('save', async function (next) {
 // statics are called on model and methods are called on objects/document created on a model
 UserSchema.methods.getSignedJwtToken = function () {
 	// synchronous with default algorithm
-	// secret gets base64 encoded before token generation
+	// secret does not get base64 encoded before token generation
 	let token = jwt.sign(
 		{
 			id: this._id,

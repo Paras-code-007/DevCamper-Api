@@ -38,6 +38,8 @@ exports.register = asyncHandler(async (req, res, next) => {
 		token,
 		msg: `registered user successfully with token`,
 	});
+	//+OR
+	// sendTokenResponse(user, 201, res);
 });
 
 // @desc    Login a User when user is registered but logout
@@ -67,13 +69,33 @@ exports.login = asyncHandler(async (req, res, next) => {
 	}
 
 	// login successful
-	const token = user.getSignedJwtToken();
+	/* const token = user.getSignedJwtToken();
 
-	// console.log(req.cookies); //[Object: null prototype] {}
+	console.log(req.cookies); //[Object: null prototype] {}
 
 	res.status(201).json({
 		success: true,
 		token,
 		msg: `Logined user successfully`,
-	});
+	}); */
+	sendTokenResponse(user, 200, res);
 });
+
+// Get Token from model, create cookie and send response
+// not hoisted but still works before before the file is fully executed before request comes to any of the above path functions
+const sendTokenResponse = function (user, statusCode, res) {
+	const token = user.getSignedJwtToken();
+
+	const cookieOptions = {
+		httpOnly: true,
+		expires: new Date(Date.now() + process.env.COOKIE_EXPIRE * 24 * 60 * 60 * 1000), //Date.now gives time in ms from epoch time
+		// signed: process.env.COOKIE_SECRET,
+		secure: process.env.NODE_ENV === 'production' ? true : false,
+	};
+
+	res.status(200).cookie('DevcamperToken', token, cookieOptions).json({
+		success: true,
+		token,
+		msg: `Logined user successfully`,
+	});
+};
