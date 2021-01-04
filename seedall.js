@@ -7,6 +7,7 @@ const dotenv = require('dotenv').config({ path: './config/config.env' });
 const ConnectDb = require('./src/connectdb');
 const Bootcamp = require('./src/models/Bootcamp');
 const Course = require('./src/models/Course');
+const User = require('./src/models/User');
 
 // console.log(dotenv);
 (async () => {
@@ -16,15 +17,18 @@ const Course = require('./src/models/Course');
 	// Read Json files
 	const buffer1 = fs.readFileSync('./_data/bootcamps.json', { encoding: 'utf-8' });
 	const buffer2 = fs.readFileSync('./_data/courses.json', { encoding: 'utf-8' });
+	const buffer3 = fs.readFileSync('./_data/users.json', { encoding: 'utf-8' });
 	// console.log(buffer);
 	bootcampObjects = JSON.parse(buffer1);
 	courseObjects = JSON.parse(buffer2);
+	userObjects = JSON.parse(buffer3);
 	// console.log(objects);
 
 	async function createDocuments() {
 		try {
 			await Bootcamp.create(bootcampObjects);
 			await Course.create(courseObjects);
+			await User.create(userObjects);
 		} catch (err) {
 			console.log('Error name', err.name);
 			console.log('Error message', err.message);
@@ -39,6 +43,7 @@ const Course = require('./src/models/Course');
 		try {
 			await Bootcamp.deleteMany();
 			await Course.deleteMany();
+			await User.deleteMany();
 		} catch (err) {
 			console.log('Error name', err.name);
 			console.log('Error message', err.message);

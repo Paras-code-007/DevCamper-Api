@@ -83,6 +83,15 @@ exports.createBootcamp = asyncHandler(async (req, res, next) => {
 		// });
 		next(err);
 	} */
+	req.body.user = req.user.id;
+
+	const publishedBootcamps = await Bootcamp.findOne({ user: req.user.id });
+	if (publishedBootcamps && req.user.role !== 'Admin') {
+		return next(
+			new ErrorResponse(`The ${req.user.role} with id: ${req.user.id} has already published a bootcamp`, 400)
+		);
+	}
+
 	const data = await Bootcamp.create(req.body);
 	res.status(201).json({
 		success: true,
