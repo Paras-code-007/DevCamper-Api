@@ -69,7 +69,19 @@ exports.addCourse = asyncHandler(async (req, res, next) => {
 	if (!asscBootcamp) {
 		return next(new ErrorResponse(`bootcamp not found with id ${req.params.id}`), 404);
 	}
+
+	// if user loginned is not owner of bootcamp
+	if (asscBootcamp.user.toString() !== req.user.id && req.user.role !== 'Admin') {
+		return next(
+			new ErrorResponse(
+				`${req.user.role} with userid: ${req.user.id} id not authorize add a course to this bootcamp with id: ${asscBootcamp._id}`,
+				403
+			)
+		);
+	}
+
 	req.body.bootcamp = req.params.bootcampId;
+	req.body.user = req.user.id;
 
 	const data = await Course.create(req.body);
 	// console.log(data);
@@ -85,15 +97,26 @@ exports.addCourse = asyncHandler(async (req, res, next) => {
 // @route   PUT /api/v1/courses/:id
 // @access  Private
 exports.updateCourse = asyncHandler(async (req, res, next) => {
+	const course = await Course.findById(req.params.id);
+
+	if (!course) {
+		return next(new ErrorResponse(`course not found with id ${req.params.id}`), 404);
+	}
+
+	// if user loginned is not owner of course
+	if (course.user.toString() !== req.user.id && req.user.role !== 'Admin') {
+		return next(
+			new ErrorResponse(
+				`${req.user.role} with userid: ${req.user.id} is not authorize to update this course with id: ${course._id}`,
+				403
+			)
+		);
+	}
+
 	const data = await Course.findByIdAndUpdate(req.params.id, req.body, {
 		new: true,
 		runValidators: true,
 	});
-
-	if (!data) {
-		return next(new ErrorResponse(`course not found with id ${req.params.id}`), 404);
-	}
-
 	res.status(200).json({
 		success: true,
 		data,
@@ -110,6 +133,16 @@ exports.deleteCourse = asyncHandler(async (req, res, next) => {
 
 	if (!data) {
 		return next(new ErrorResponse(`course not found with id ${req.params.id}`), 404);
+	}
+
+	// if user loginned is not owner of course
+	if (data.user.toString() !== req.user.id && req.user.role !== 'Admin') {
+		return next(
+			new ErrorResponse(
+				`${req.user.role} with userid: ${req.user.id} is not authorize to delete this course with course id: ${data._id}`,
+				403
+			)
+		);
 	}
 
 	let deletedcourse = data;
