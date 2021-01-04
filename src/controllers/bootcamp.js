@@ -105,12 +105,10 @@ exports.createBootcamp = asyncHandler(async (req, res, next) => {
 // @route   PUT /api/v1/bootcamps/:id
 // @access  Private
 exports.updateBootcamp = asyncHandler(async (req, res, next) => {
-	const data = await Bootcamp.findByIdAndUpdate(req.params.id, req.body, {
-		runValidators: true,
-		new: true,
-		useFindAndModify: false,
-	});
-	if (!data) {
+	const bootcamp = await Bootcamp.findById(req.params.id);
+
+	// if bootcamp does not exist
+	if (!bootcamp) {
 		// return res.status(400).json({
 		// 	success: false,
 		// 	data: null,
@@ -119,6 +117,25 @@ exports.updateBootcamp = asyncHandler(async (req, res, next) => {
 		// });
 		return next(new ErrorResponse(`Bootcamp not found with id of ${req.params.id}: Invalid Id error`, 404));
 	}
+
+	console.log(bootcamp.user);
+
+	// if user loginned is not owner of bootcamp
+	if (bootcamp.user.toString() !== req.user.id && req.user.role !== 'Admin') {
+		return next(
+			new ErrorResponse(
+				`${req.user.role} with userid: ${req.user.id} id not authorize to update this bootcamp`,
+				403
+			)
+		);
+	}
+
+	const data = await Bootcamp.findByIdAndUpdate(req.params.id, req.body, {
+		runValidators: true,
+		new: true,
+		useFindAndModify: false,
+	});
+
 	res.status(200).json({
 		success: true,
 		data,
@@ -155,6 +172,17 @@ exports.deleteBootcamp = asyncHandler(async (req, res, next) => {
 		// });
 		return next(new ErrorResponse(`Bootcamp not found with id of ${req.params.id}: Invalid Id error`, 404));
 	}
+
+	// if user loginned is not owner of bootcamp
+	if (data.user.toString() !== req.user.id && req.user.role !== 'Admin') {
+		return next(
+			new ErrorResponse(
+				`${req.user.role} with userid: ${req.user.id} id not authorize to delete this bootcamp`,
+				403
+			)
+		);
+	}
+
 	deletedbootcamp = data;
 	data.remove();
 	res.status(200).json({
@@ -202,8 +230,19 @@ exports.uploadPhoto = asyncHandler(async (req, res, next) => {
 
 	const bootcamp = await Bootcamp.findById(req.params.id);
 
+	// if bootcamp does not exist
 	if (!bootcamp) {
 		return next(new ErrorResponse(`Bootcamp not found with id ${req.params.id}`, 404));
+	}
+
+	// if user loginned is not owner of bootcamp
+	if (bootcamp.user.toString() !== req.user.id && req.user.role !== 'Admin') {
+		return next(
+			new ErrorResponse(
+				`${req.user.role} with userid: ${req.user.id} id not authorize to update this bootcamp`,
+				403
+			)
+		);
 	}
 
 	if (!req.files) {
