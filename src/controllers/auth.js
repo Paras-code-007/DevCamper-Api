@@ -1,6 +1,8 @@
 const asyncHandler = require('../utils/asyncHandler');
 const ErrorResponse = require('../utils/ErrorResponse_class');
 const User = require('../models/User');
+const crypto = require('crypto');
+const { sendMail } = require('../utils/sendMail');
 
 // @desc    Register a User
 // @route   POST /api/v1/auth/register
@@ -11,11 +13,25 @@ exports.register = asyncHandler(async (req, res, next) => {
 	// });
 	const { name, email, password, role } = req.body;
 
-	const user = await User.create({
+	// if user already exist
+	let user = await User.findOne({ email });
+	if (user) {
+		return next(new ErrorResponse('User Alredy Exist!! Try Login or forgot password'), 400);
+	}
+
+	// generate 2FA Key
+	const buf = await crypto.randomBytes(256);
+	// console.log(`${buf.length} bytes of random data: ${buf.toString('hex')}`);
+	const hash2FAKey = crypto.createHash('SHA256').update(buf.toString('hex')).digest('hex');
+	console.log(hash2FAKey);
+
+	user = await User.create({
 		name,
 		email,
 		password,
 		role,
+		TwoFAKey: hash2FAKey,
+		verifyStatus: false,
 	});
 
 	// const token = user.getSignedJwtToken();
@@ -30,6 +46,22 @@ exports.register = asyncHandler(async (req, res, next) => {
 	// console.log(user);
 
 	user.password = undefined;
+	/* 	user.TwoFAKey = undefined;
+
+	const hash2FALink = `${req.protocol}://${req.get('host')}/api/v1/auth/register/${hash2FAKey}`;
+
+	await sendMail({
+		email: user.email,
+		subject: 'Verify Your Account By clicking on the link',
+		bodyText: `Dear ${user.name}, \n Click on this link to verify your account \n ${hash2FALink}`,
+		bodyHtml: `<h2>Dear ${user.name},</h2> \n <h4>Click on this link to verify your account \n <br><a>${hash2FALink}</a></h4>`,
+	});
+
+	res.status(200).json({
+		success: true,
+		data: user,
+		msg: "Unverified users can't login, Visit your emailId to verify",
+	}); */
 
 	// at register sent token means after register user is logged in
 	// res.status(201).json({
@@ -42,6 +74,17 @@ exports.register = asyncHandler(async (req, res, next) => {
 	// Login after register
 	sendTokenResponse(user, 201, res, true);
 });
+
+// @desc    Verify a User
+// @route   GET /api/v1/auth/register/:registerId
+// @access  Public
+// exports.verifyRegisterUser = (req, res, next) => {
+// 	const user = User.find({ TwoFAKey: req.params.registerId });
+
+// 	user.TwoFAKey = undefined;
+// 	user.verifyStatus = true;
+
+// };
 
 // @desc    Login a User when user is registered but logout
 // @route   POST /api/v1/auth/login
@@ -93,6 +136,53 @@ exports.getMe = asyncHandler(async (req, res, next) => {
 		success: true,
 		data: user,
 		msg: `${user.name} Profile`,
+	});
+});
+
+// @desc    Forgot Password
+// @route   POST /api/v1/auth/forgotpassword
+// @access  Public
+exports.forgotPassword = asyncHandler(async (req, res, next) => {
+	const email = req.body.email;
+	if (!email) {
+		return next(new ErrorResponse('Please provide a email addresss', 400));
+	}
+	const user = await User.findOne({ email });
+
+	if (!user) {
+		return next(new ErrorResponse('There is no user with that Email', 404));
+	}
+
+	// Get reset token
+	const resetToken = await user.generateResetPassToken();
+	console.log(resetToken);
+
+	await user.save({ validateBeforeSave: false });
+
+	// create reset url
+	// const resetUrl = `${req.protocol}://${req.get('host')}/api/v1/auth/resetpassword/${resetToken}`;
+	const resetUrl = `${req.protocol}://${req.get('host')}/api/v1/resetpassword/${resetToken}`; //PUT  for resetting password
+
+	const message = `You are receiving this mail because you/someone else have requested for reseting password. Please make a put request to: \n\n ${resetUrl}`;
+
+	try {
+		await sendMail({
+			email: user.email,
+			subject: 'Password Reset Token',
+			bodyText: message,
+			bodyHtml: message,
+		});
+	} catch (err) {
+		console.log(err);
+		user.resetPasswordToken = undefined;
+		user.resetPasswordExpire = undefined;
+		await user.save({ validateBeforeSave: false });
+		return next(new ErrorResponse('Email Could not be sent ', 500)); //Internal server error
+	}
+
+	res.status(200).json({
+		success: true,
+		msg: `Mail has been sent to ${user.email} regarding password reset`,
 	});
 });
 

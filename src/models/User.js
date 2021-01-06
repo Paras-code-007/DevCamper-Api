@@ -1,6 +1,8 @@
 const mongoose = require('mongoose');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
+const crypto = require('crypto');
+
 const UserSchema = new mongoose.Schema({
 	name: {
 		type: String,
@@ -28,6 +30,11 @@ const UserSchema = new mongoose.Schema({
 	},
 	resetPasswordToken: String,
 	resetPasswordExpire: String,
+	TwoFAKey: {
+		type: String,
+		select: false,
+	},
+	verifyStatus: Boolean,
 	createdAt: {
 		type: Date,
 		default: Date.now,
@@ -36,14 +43,17 @@ const UserSchema = new mongoose.Schema({
 
 // Encrypt password using bcrypt
 UserSchema.pre('save', async function (next) {
+	if (!this.isModified('password')) {
+		return next();
+	}
 	// this.password;
 	try {
 		const salt = await bcrypt.genSalt(10);
 		const hashpass = await bcrypt.hash(this.password, salt);
 		this.password = hashpass;
 	} catch (err) {
-		console.log('Error name', err.name);
-		console.log('Error message', err.message);
+		console.log('Error name:', err.name);
+		console.log('Error message:', err.message);
 	}
 	next();
 });
@@ -91,6 +101,20 @@ UserSchema.methods.matchPassword = async function (passwordEntered) {
 	// console.log(passwordEntered);
 	// console.log(this);
 	return await bcrypt.compare(passwordEntered, this.password);
+};
+
+// Generate Reset Password Token
+UserSchema.methods.generateResetPassToken = async function () {
+	const buf = crypto.randomBytes(20);
+
+	// Give a 256 byte reset token because of SHA
+	const resetToken = await crypto.createHash('SHA256').update(buf.toString('hex')).digest('hex');
+
+	this.resetPasswordToken = resetToken;
+	// this.resetPasswordExpire = new Date(Date.now() + 10 * 60 * 1000);
+	this.resetPasswordExpire = Date.now() + 10 * 60 * 1000;
+
+	return resetToken;
 };
 
 const User = mongoose.model('User', UserSchema);
