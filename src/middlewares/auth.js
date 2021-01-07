@@ -38,7 +38,12 @@ exports.checkIfLogin = asyncHandler(async function (req, res, next) {
 
 		// console.log(decodedToken);
 
-		req.user = await User.findById(decodedToken.id); //no pass select
+		// req.user = await User.findById(decodedToken.id); //no pass select
+		const user = await User.findById(decodedToken.id);
+		if (!user) {
+			return next(new ErrorResponse('Not authorize to access this route => token not valid', 401));
+		}
+		req.user = user;
 		next();
 	} catch (err) {
 		// Token is not valid
