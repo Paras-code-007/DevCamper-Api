@@ -108,9 +108,10 @@ UserSchema.methods.generateResetPassToken = async function () {
 	const buf = crypto.randomBytes(20);
 
 	// Give a 256 byte reset token because of SHA
-	const resetToken = await crypto.createHash('SHA256').update(buf.toString('hex')).digest('hex');
+	const resetToken = buf.toString('hex');
+	const hashResetToken = await crypto.createHash('SHA256').update(resetToken).digest('hex');
 
-	this.resetPasswordToken = resetToken;
+	this.resetPasswordToken = hashResetToken;
 	// this.resetPasswordExpire = new Date(Date.now() + 10 * 60 * 1000);
 	this.resetPasswordExpire = Date.now() + 10 * 60 * 1000;
 

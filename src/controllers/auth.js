@@ -160,8 +160,8 @@ exports.forgotPassword = asyncHandler(async (req, res, next) => {
 	await user.save({ validateBeforeSave: false });
 
 	// create reset url
-	// const resetUrl = `${req.protocol}://${req.get('host')}/api/v1/auth/resetpassword/${resetToken}`;
-	const resetUrl = `${req.protocol}://${req.get('host')}/api/v1/resetpassword/${resetToken}`; //PUT  for resetting password
+	const resetUrl = `${req.protocol}://${req.get('host')}/api/v1/auth/resetpassword/${resetToken}`;
+	// const resetUrl = `${req.protocol}://${req.get('host')}/api/v1/resetpassword/${resetToken}`; //PUT  for resetting password
 
 	const message = `You are receiving this mail because you/someone else have requested for reseting password. Please make a put request to: \n\n ${resetUrl}`;
 
@@ -207,3 +207,49 @@ const sendTokenResponse = function (user, statusCode, res, isPathRegister) {
 			msg: `${isPathRegister ? 'Registered' : 'Logined'} user successfully`,
 		});
 };
+
+// @desc    Reset Password
+// @route   PUT /api/v1/auth/resetpassword/:resetToken
+// @access  Public
+exports.resetPassword = asyncHandler(async (req, res, next) => {
+	// get token from url and dehash it/compare
+	// get hashed token
+	let resetPasswordToken = crypto.createHash('SHA256').update(req.params.resetToken).digest('hex');
+
+	// Token validity check and get user if token valid
+	const user = await User.findOne({
+		resetPasswordToken,
+		resetPasswordExpire: {
+			$gt: Date.now(),
+		},
+	}).select('+password');
+
+	if (!user) {
+		return next(new ErrorResponse('Invalid Token', 400));
+	}
+
+	if (!req.body.password) {
+		return next(new ErrorResponse('Please enter the new password', 400));
+	}
+
+	// If Password matches old password
+	const isPrevPass = await user.matchPassword(req.body.password);
+	if (isPrevPass) {
+		return next(new ErrorResponse('Please enter the new password', 400));
+	}
+
+	// Set new password
+	user.password = req.body.password;
+	user.resetPasswordToken = undefined;
+	user.resetPasswordExpire = undefined;
+
+	await user.save(); //validate for password length
+
+	sendTokenResponse(user, 203, res, false);
+
+	// res.status(200).json({
+	// 	success: true,
+	// 	data: user,
+	// 	msg: `${user.name} Profile`,
+	// });
+});
