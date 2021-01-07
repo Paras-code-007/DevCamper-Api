@@ -31,6 +31,7 @@ exports.register = asyncHandler(async (req, res, next) => {
 		password,
 		role,
 		TwoFAKey: hash2FAKey,
+		// TwoFAKeyValidity: Date.now() + 60 * 60 * 1000,
 		verifyStatus: false,
 	});
 
@@ -46,13 +47,14 @@ exports.register = asyncHandler(async (req, res, next) => {
 	// console.log(user);
 
 	user.password = undefined;
-	/* 	user.TwoFAKey = undefined;
+	user.TwoFAKey = undefined;
+	// user.TwoFAKeyValidity = undefined;
 
-	const hash2FALink = `${req.protocol}://${req.get('host')}/api/v1/auth/register/${hash2FAKey}`;
+	const hash2FALink = `${req.protocol}://${req.get('host')}/api/v1/auth/register/verify/${hash2FAKey}`;
 
 	await sendMail({
 		email: user.email,
-		subject: 'Verify Your Account By clicking on the link',
+		subject: 'Verify Your DevCamper Account',
 		bodyText: `Dear ${user.name}, \n Click on this link to verify your account \n ${hash2FALink}`,
 		bodyHtml: `<h2>Dear ${user.name},</h2> \n <h4>Click on this link to verify your account \n <br><a>${hash2FALink}</a></h4>`,
 	});
@@ -61,7 +63,7 @@ exports.register = asyncHandler(async (req, res, next) => {
 		success: true,
 		data: user,
 		msg: "Unverified users can't login, Visit your emailId to verify",
-	}); */
+	});
 
 	// at register sent token means after register user is logged in
 	// res.status(201).json({
@@ -72,19 +74,37 @@ exports.register = asyncHandler(async (req, res, next) => {
 	// });
 	//+OR
 	// Login after register
-	sendTokenResponse(user, 201, res, true);
+	// sendTokenResponse(user, 201, res, true);
 });
 
 // @desc    Verify a User
-// @route   GET /api/v1/auth/register/:registerId
+// @route   GET /api/v1/auth/register/verify/:registerId
 // @access  Public
-// exports.verifyRegisterUser = (req, res, next) => {
-// 	const user = User.find({ TwoFAKey: req.params.registerId });
+exports.verifyRegisterUser = asyncHandler(async (req, res, next) => {
+	const user = await User.findOne({
+		TwoFAKey: req.params.registerId,
+		// TwoFAKeyValidity: {
+		// 	$gt: Date.now(),
+		// },  //if 2FAKey expires then there is no way to generate it again because it is only made in register
+	});
 
-// 	user.TwoFAKey = undefined;
-// 	user.verifyStatus = true;
+	if (!user) {
+		return next(new ErrorResponse('Invalid Token', 400));
+	}
 
-// };
+	user.verifyStatus = true;
+	user.TwoFAKey = undefined;
+	// user.TwoFAKeyValidity = undefined;
+	await user.save({ validateBeforeSave: true });
+
+	// sendTokenResponse(user, 201, res, true);
+	//+ OR
+	res.status(200).json({
+		success: true,
+		data: user,
+		msg: 'Successfuly verified and created user, redirect to login, statusCode 301',
+	});
+});
 
 // @desc    Login a User when user is registered but logout
 // @route   POST /api/v1/auth/login
@@ -103,6 +123,10 @@ exports.login = asyncHandler(async (req, res, next) => {
 	// console.log(user); //this for any method called on it
 	if (!user) {
 		return next(new ErrorResponse('Invalid Credentials', 401)); //401 unauthorized
+	}
+
+	if (!user.verifyStatus) {
+		return next(new ErrorResponse('Please verify first in order to login', 403));
 	}
 
 	// check if password matches
@@ -151,6 +175,10 @@ exports.forgotPassword = asyncHandler(async (req, res, next) => {
 
 	if (!user) {
 		return next(new ErrorResponse('There is no user with that Email', 404));
+	}
+
+	if (!user.verifyStatus) {
+		return next(new ErrorResponse('You need to verify first in order to access this route', 403));
 	}
 
 	// Get reset token

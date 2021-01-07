@@ -34,7 +34,11 @@ const UserSchema = new mongoose.Schema({
 		type: String,
 		select: false,
 	},
-	verifyStatus: Boolean,
+	// TwoFAKeyValidity: String,
+	verifyStatus: {
+		type: Boolean,
+		default: false,
+	},
 	createdAt: {
 		type: Date,
 		default: Date.now,

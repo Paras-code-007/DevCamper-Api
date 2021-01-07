@@ -38,7 +38,7 @@ exports.checkIfLogin = asyncHandler(async function (req, res, next) {
 
 		// console.log(decodedToken);
 
-		req.user = await User.findById(decodedToken.id);
+		req.user = await User.findById(decodedToken.id); //no pass select
 		next();
 	} catch (err) {
 		// Token is not valid
