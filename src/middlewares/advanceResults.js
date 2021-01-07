@@ -1,6 +1,7 @@
 // function inside a function where async req,res,next is the callback function
 
 const advanceResults = (model, populate, populateFeilds) => async (req, res, next) => {
+	//function further returning a function
 	req.params.id && next();
 	try {
 		let querystr = JSON.stringify(req.query);

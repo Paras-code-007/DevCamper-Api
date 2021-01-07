@@ -31,6 +31,7 @@ const ConnectDb = require('./connectdb');
 const bootcampsRoute = require('./routes/bootcamps').router;
 const coursesRoute = require('./routes/courses');
 const authRoute = require('./routes/auth');
+const userRoute = require('./routes/users'); //Private(Admin Only)
 
 // Middlewares
 const errorHandler = require('./middlewares/errorHandler');
@@ -70,6 +71,7 @@ app.use('/public', express.static(path.join(__dirname, '../public')));
 app.use('/api/v1/bootcamps', bootcampsRoute);
 app.use('/api/v1/courses', coursesRoute);
 app.use('/api/v1/auth', authRoute);
+app.use('/api/v1/users', userRoute);
 app.use(errorHandler); //insted of using express error handler use our own made error handler
 
 app.get('/favicon.ico', (req, res, next) => {

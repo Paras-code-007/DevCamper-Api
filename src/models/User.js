@@ -45,7 +45,7 @@ const UserSchema = new mongoose.Schema({
 	},
 });
 
-// Encrypt password using bcrypt
+// Encrypt password before saving a document(and if doc pass is modified) using bcrypt
 UserSchema.pre('save', async function (next) {
 	if (!this.isModified('password')) {
 		return next();
