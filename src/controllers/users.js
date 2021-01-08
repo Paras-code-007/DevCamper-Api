@@ -77,3 +77,38 @@ exports.deleteUser = asyncHandler(async (req, res, next) => {
 		msg: `deleted user with id: ${user._id}`,
 	});
 });
+
+// @desc    Get all unverified users
+// @route   GET /api/v1/users/unverifiedusers
+// @access  Admin/Private
+exports.getUnverifiedUsers = asyncHandler(async (req, res, next) => {
+	const users = await User.find({ verifyStatus: false });
+
+	// console.log(user);
+	// console.log(typeof user);  //Array
+
+	res.status(200).json({
+		success: true,
+		count: users.length,
+		data: users,
+		msg: `All Unverified Users`,
+	});
+});
+
+// @desc    delete all unverified users
+// @route   DELETE /api/v1/users/unverifiedusers
+// @access  Admin/Private
+
+exports.deleteUnverifiedUsers = asyncHandler(async (req, res, next) => {
+	const users = await User.find({ verifyStatus: false });
+
+	users.forEach((user) => {
+		user.remove();
+	});
+
+	res.status(200).json({
+		success: true,
+		data: users,
+		msg: `Removed list of users`,
+	});
+});

@@ -8,7 +8,6 @@ const ErrorResponse = require('../utils/ErrorResponse_class');
 exports.getMe = asyncHandler(async (req, res, next) => {
 	// const user = req.user;
 	//+OR
-	console.log('hello');
 	const user = await User.findById(req.user.id);
 	res.status(200).json({
 		success: true,
