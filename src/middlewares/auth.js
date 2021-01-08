@@ -39,10 +39,20 @@ exports.checkIfLogin = asyncHandler(async function (req, res, next) {
 		// console.log(decodedToken);
 
 		// req.user = await User.findById(decodedToken.id); //no pass select
+
+		// when user passes earlier existing token of a deleted account
 		const user = await User.findById(decodedToken.id);
 		if (!user) {
 			return next(new ErrorResponse('Not authorize to access this route => token not valid', 401));
 		}
+
+		// if user uses previous token but is not verified currently(chenge email case)
+		if (!user.verifyStatus) {
+			return next(
+				new ErrorResponse('You need to verify your email first in order to access private routes', 401)
+			);
+		}
+
 		req.user = user;
 		next();
 	} catch (err) {
