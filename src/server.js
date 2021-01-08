@@ -75,7 +75,7 @@ app.use('/api/v1/users', userRoute);
 app.use(errorHandler); //insted of using express error handler use our own made error handler
 
 app.get('/favicon.ico', (req, res, next) => {
-	res.sendFile(__dirname + '/favicon.ico');
+	res.status(200).sendFile(__dirname + '/favicon.ico');
 });
 
 // testing **********************************************************

@@ -95,7 +95,7 @@ exports.verifyRegisterUser = asyncHandler(async (req, res, next) => {
 	user.verifyStatus = true;
 	user.TwoFAKey = undefined;
 	// user.TwoFAKeyValidity = undefined;
-	await user.save({ validateBeforeSave: true });
+	await user.save({ validateModifiedOnly: true });
 
 	// sendTokenResponse(user, 201, res, true);
 	//+ OR
