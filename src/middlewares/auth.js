@@ -18,6 +18,10 @@ exports.checkIfLogin = asyncHandler(async function (req, res, next) {
 	// console.log(token);
 	// console.log(req);
 
+	if (token == 'null' || token == null || token == undefined) {
+		return next(new ErrorResponse('Not authorize to access this route => token not exist', 401));
+	}
+
 	if (!token) {
 		return next(new ErrorResponse('Not authorize to access this route => token not exist', 401));
 	}

@@ -16,7 +16,7 @@ exports.register = asyncHandler(async (req, res, next) => {
 	// if user already exist
 	let user = await User.findOne({ email });
 	if (user) {
-		return next(new ErrorResponse('User Alredy Exist!! Try Login or forgot password'), 400);
+		return next(new ErrorResponse('User Alredy Exist!! Try Login or forgot password', 400));
 	}
 
 	// generate 2FA Key
