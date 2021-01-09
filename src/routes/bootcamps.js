@@ -14,9 +14,11 @@ const { checkIfLogin, authorize } = require('../middlewares/auth');
 
 // Include Other Resource Routers
 const courseRouter = require('./courses');
+const reviewRouter = require('./reviews');
 
 // Reroute into other resource router
 router.use('/:bootcampId/courses', courseRouter); //means mount this route to the course router
+router.use('/:bootcampId/reviews', reviewRouter); //means mount this route to the review router
 
 // new syntax
 router
