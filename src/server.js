@@ -38,6 +38,9 @@ const reviewRoute = require('./routes/reviews'); //Private(Admin Only)
 const errorHandler = require('./middlewares/errorHandler');
 const fileUpload = require('express-fileupload');
 const cookieParser = require('cookie-parser');
+const mongoSanitize = require('express-mongo-sanitize');
+const helmet = require('helmet');
+var xss = require('xss-clean');
 
 // Connect to Database
 ConnectDb();
@@ -61,6 +64,15 @@ app.use(fileUpload());
 
 // cookie Parser
 app.use(cookieParser());
+
+// to sanatize the user inputs for nosql injecttion queries
+app.use(mongoSanitize());
+
+// to add extra headers for security
+app.use(helmet());
+
+// to sanatize the user inputs for nosql injecttion queries
+app.use(xss());
 
 // console.log(process.NODE_ENV); //undefined
 
