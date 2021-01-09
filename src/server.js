@@ -40,7 +40,10 @@ const fileUpload = require('express-fileupload');
 const cookieParser = require('cookie-parser');
 const mongoSanitize = require('express-mongo-sanitize');
 const helmet = require('helmet');
-var xss = require('xss-clean');
+const xss = require('xss-clean');
+const rateLimit = require('express-rate-limit');
+var hpp = require('hpp');
+const cors = require('cors');
 
 // Connect to Database
 ConnectDb();
@@ -69,15 +72,32 @@ app.use(cookieParser());
 app.use(mongoSanitize());
 
 // to add extra headers for security
+// Set security headers
 app.use(helmet());
 
-// to sanatize the user inputs for nosql injecttion queries
+// to sanatize the user inputs for cross site scripting attacks (add <script> tag in mongodb query and then they get to html)
+// Prevent XSS attacks
 app.use(xss());
+
+// Rate limiting
+const limiter = rateLimit({
+	windowMs: 10 * 60 * 1000, // 10 mins
+	max: 100,
+});
+//  apply to all requests
+app.use(limiter);
+
+// Prevent http param pollution
+app.use(hpp());
+
+// Enable CORS
+app.use(cors());
 
 // console.log(process.NODE_ENV); //undefined
 
 // set static folder(mount directory to a path)
-app.use('/public', express.static(path.join(__dirname, '../public')));
+// app.use('/public', express.static(path.join(__dirname, '../public')));
+app.use('/', express.static(path.join(__dirname, '../public')));
 
 // Mount Routes
 // app.use('/api/v1/bootcamps', require('./routes/bootcamps'));
