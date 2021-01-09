@@ -214,28 +214,6 @@ exports.forgotPassword = asyncHandler(async (req, res, next) => {
 	});
 });
 
-// Get Token from model, create cookie and send response
-// not hoisted but still works before before the file is fully executed before request comes to any of the above path functions
-const sendTokenResponse = function (user, statusCode, res, isPathRegister) {
-	const token = user.getSignedJwtToken();
-
-	const cookieOptions = {
-		httpOnly: true,
-		expires: new Date(Date.now() + process.env.COOKIE_EXPIRE * 24 * 60 * 60 * 1000), //Date.now gives time in ms from epoch time
-		// signed: process.env.COOKIE_SECRET,
-		secure: process.env.NODE_ENV === 'production' ? true : false,
-	};
-
-	res.status(statusCode)
-		.cookie('DevcamperToken', token, cookieOptions)
-		.json({
-			success: true,
-			data: isPathRegister ? user : undefined,
-			token,
-			msg: `${isPathRegister ? 'Registered' : 'Logined'} user successfully`,
-		});
-};
-
 // @desc    Reset Password
 // @route   PUT /api/v1/auth/resetpassword/:resetToken
 // @access  Public
@@ -281,3 +259,51 @@ exports.resetPassword = asyncHandler(async (req, res, next) => {
 	// 	msg: `${user.name} Profile`,
 	// });
 });
+
+// @desc    Logout a user/clear out the cookies or any session
+// @route   POST /api/v1/auth/logout
+// @access  Private
+exports.logoutUser = asyncHandler((req, res, next) => {
+	logout(res);
+	req.headers.authorization = null;
+});
+
+// Get Token from model, create cookie and send response
+// not hoisted but still works before before the file is fully executed before request comes to any of the above path functions
+const sendTokenResponse = function (user, statusCode, res, isPathRegister) {
+	const token = user.getSignedJwtToken();
+
+	const cookieOptions = {
+		httpOnly: true,
+		expires: new Date(Date.now() + process.env.COOKIE_EXPIRE * 24 * 60 * 60 * 1000), //Date.now gives time in ms from epoch time
+		// signed: process.env.COOKIE_SECRET,
+		secure: process.env.NODE_ENV === 'production' ? true : false,
+	};
+
+	res.status(statusCode)
+		.cookie('DevcamperToken', token, cookieOptions)
+		.json({
+			success: true,
+			data: isPathRegister ? user : undefined,
+			token,
+			msg: `${isPathRegister ? 'Registered' : 'Logined'} user successfully`,
+		});
+};
+
+function logout(res) {
+	// clear the cookies because from cookies only authoriztion header is set
+	const cookieOptions = {
+		httpOnly: true,
+		expires: new Date(Date.now() + 10 * 1000),
+		secure: process.env.NODE_ENV === 'production' ? true : false,
+	};
+
+	// console.log(req.user); //undefined
+
+	res.status(200).cookie('DevcamperToken', 'null', cookieOptions).json({
+		success: true,
+		msg: 'logged out user succesfully',
+	});
+}
+
+exports.logout = logout;

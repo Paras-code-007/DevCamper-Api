@@ -1,6 +1,7 @@
 const User = require('../models/User');
 const asyncHandler = require('../utils/asyncHandler');
 const ErrorResponse = require('../utils/ErrorResponse_class');
+const { logout } = require('./auth');
 
 // @desc    Get the current loggined User/Me(Personal Profile)
 // @route   GET /api/v1/auth/me
@@ -63,7 +64,8 @@ exports.updateMe = asyncHandler(async (req, res, next) => {
 		user.email = req.body.email;
 		user.verifyStatus = false;
 		// await user.save({ validateBeforeSave: true });
-		// logout now
+
+		logout(res);
 	}
 
 	if (req.body.name) user.name = req.body.name;
