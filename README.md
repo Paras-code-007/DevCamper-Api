@@ -1,7 +1,47 @@
+# EduTech API
 
-# DevCamper Api
+> Backend API for EduTech application, which is a bootcamp directory website
 
-Backend Api for the DevCamper application to manage bootcamps, courses, reviews, users and authentication
+## Usage
+
+Rename "config/config.env.env" to "config/config.env" and update the values/settings to your own
+
+## Install Dependencies
+
+```
+npm install
+```
+
+## Run App
+
+```
+# Run in dev mode
+npm run dev
+
+# Run in prod mode
+npm start
+```
+
+## Database Seeder
+
+To seed the database with users, bootcamps, courses and reviews with data from the "\_data" folder, run
+
+```
+# Destroy all data
+node seeder -d
+
+# Import all data
+node seeder -i
+```
+
+## Demo
+
+The API is live at [paras-code-007.github.io/EduTech/](https://paras-code-007.github.io/EduTech/)
+Extensive documentation with examples [here](https://documenter.getpostman.com/view/10906996/2s7YYvaNWP)
+
+# EduTech Api
+
+Backend Api for the EduTech application to manage bootcamps, courses, reviews, users and authentication
 
 ## Indices
 
@@ -81,7 +121,7 @@ Route to Verify the User and redirect to login
 
 ```bash
 Method: GET
-Type: 
+Type:
 URL: {{URI}}/api/v1/auth/register/verify/6273321e5c9fc3941af08112f17901d19874f2bb9493f66d5acf0bbe337daddd
 ```
 
@@ -106,7 +146,7 @@ URL: http://localhost:3000/api/v1/auth/resetpassword/e3efefad490e2afba281f99019c
 
 ***Body:***
 
-```js        
+```js
 {
     "password": "helloworld"
 }
@@ -134,7 +174,7 @@ URL: {{URI}}/api/v1/auth/forgotpassword
 
 ***Body:***
 
-```js        
+```js
 {
     "email": "johndoe@gmail.com"
 }
@@ -160,7 +200,7 @@ URL: {{URI}}/api/v1/auth/login
 
 ***Body:***
 
-```js        
+```js
 {
     "email": "johndoe@gmail.com",
     "password": "qwertyuiop"
@@ -172,7 +212,7 @@ URL: {{URI}}/api/v1/auth/login
 ### 5. {{URI}}/api/v1/auth/me
 
 
-Get Personal Profile of login User 
+Get Personal Profile of login User
 Loginned Using Authorisation token header or in cookie
 
 
@@ -180,7 +220,7 @@ Loginned Using Authorisation token header or in cookie
 
 ```bash
 Method: GET
-Type: 
+Type:
 URL: {{URI}}/api/v1/auth/me
 ```
 
@@ -211,7 +251,7 @@ URL: {{URI}}/api/v1/auth/register
 
 ***Body:***
 
-```js        
+```js
 {
     "name": "John Doe",
     "email": "johndoe@gmail.com",
@@ -241,7 +281,7 @@ URL: {{URI}}/api/v1/auth/register
 
 ***Body:***
 
-```js        
+```js
 {
     "name": "Jane Dane",
     "email": "janedane@gmail.com",
@@ -271,7 +311,7 @@ URL: {{URI}}/api/v1/auth/register
 
 ***Body:***
 
-```js        
+```js
 {
     "name": "Sara Kensing",
     "email": "sara@gmail.com",
@@ -294,9 +334,9 @@ Bootcamps CRUD functionality
 ***Endpoint:***
 
 ```bash
-Method: 
-Type: 
-URL: 
+Method:
+Type:
+URL:
 ```
 
 
@@ -308,9 +348,9 @@ URL:
 ***Endpoint:***
 
 ```bash
-Method: 
-Type: 
-URL: 
+Method:
+Type:
+URL:
 ```
 
 
@@ -323,7 +363,7 @@ URL:
 
 ```bash
 Method: GET
-Type: 
+Type:
 URL: http://localhost:4444/
 ```
 
@@ -337,7 +377,7 @@ URL: http://localhost:4444/
 
 ```bash
 Method: GET
-Type: 
+Type:
 URL: http://localhost:4444/
 ```
 
@@ -350,9 +390,9 @@ URL: http://localhost:4444/
 ***Endpoint:***
 
 ```bash
-Method: 
-Type: 
-URL: 
+Method:
+Type:
+URL:
 ```
 
 
@@ -372,7 +412,7 @@ get courses in a specefic bootcamp
 
 ```bash
 Method: GET
-Type: 
+Type:
 URL: {{URI}}/api/v1/bootcamps/5d725a1b7b292f5f8ceff788/courses
 ```
 
@@ -389,7 +429,7 @@ get all courses in database
 
 ```bash
 Method: GET
-Type: 
+Type:
 URL: {{URI}}/api/v1/courses/
 ```
 
@@ -403,7 +443,7 @@ URL: {{URI}}/api/v1/courses/
 
 ```bash
 Method: GET
-Type: 
+Type:
 URL: {{URI}}/api/v1/courses
 ```
 
@@ -426,7 +466,7 @@ URL: {{URI}}/api/v1/courses
 
 ```bash
 Method: GET
-Type: 
+Type:
 URL: {{URI}}/api/v1/courses
 ```
 
@@ -465,7 +505,7 @@ URL: {{URI}}/api/v1/courses/5d725a4a7b292f5f8ceff789
 
 ***Body:***
 
-```js        
+```js
 {
     "tuition": 14000,
     "minimumSkill": "advanced"
@@ -499,7 +539,7 @@ URL: {{URI}}/api/v1/bootcamps/5d725a1b7b292f5f8ceff788/courses
 
 ***Body:***
 
-```js        
+```js
 {
     "title": "Full Stack Web Dev",
     "description": "In this course you will learn all about the front end with HTML, CSS and JavaScript. You will master tools like Git and Webpack and also learn C# and ASP.NET with Postgres",
@@ -523,7 +563,7 @@ delete a course with specefic Id
 
 ```bash
 Method: DELETE
-Type: 
+Type:
 URL: {{URI}}/api/v1/courses/5d725c84c4ded7bcb480eaa0
 ```
 
@@ -552,7 +592,7 @@ URL: {{URI}}/api/v1/auth/me
 
 ***Body:***
 
-```js        
+```js
 {
     "email": "johndoe@gmail.com",
     "password": "qwertyuiop"
@@ -572,7 +612,7 @@ get my profile details
 
 ```bash
 Method: GET
-Type: 
+Type:
 URL: {{URI}}/api/v1/auth/me
 ```
 
@@ -603,7 +643,7 @@ URL: {{URI}}/api/v1/auth/me
 
 ***Body:***
 
-```js        
+```js
 {
     "name": "Sara Kensing",
     "email": "sara@gmail.com",
@@ -628,7 +668,7 @@ Logout the user(clear cookies)
 
 ```bash
 Method: GET
-Type: 
+Type:
 URL: {{URI}}/api/v1/auth/logout
 ```
 
@@ -659,7 +699,7 @@ URL: {{URI}}/api/v1/bootcamps/5ff99342244706c0e4d2b6e4/reviews
 
 ***Body:***
 
-```js        
+```js
 {
     "title": "Great bootcampss",
     "body": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec viverra feugiat mauris id viverra. Duis luctus ex sed facilisis ultrices. Curabitur scelerisque bibendum ligula, sssquis condimentum libero fermentum in. Aenean erat erat, aliquam in purus a, rhoncus hendrerit tellus. Donec accumsan justo in felis consequat sollicitudin. Fusce luctus mattis nunc vitae maximus. Curabitur semper felis eu magna laoreet scelerisque",
@@ -679,7 +719,7 @@ Get all reviews for a specefic bootcamp
 
 ```bash
 Method: GET
-Type: 
+Type:
 URL: {{URI}}/api/v1/bootcamps/5ff3025f1b0fc34f4cb31c78/reviews/
 ```
 
@@ -710,7 +750,7 @@ URL: {{URI}}/api/v1/bootcamps/5ff99342244706c0e4d2b6e4/reviews
 
 ***Body:***
 
-```js        
+```js
 {
     "title": "Not worth the money",
     "body": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec viverra feugiat mauris id viverra. Duis luctus ex sed facilisis ultrices. Curabitur scelerisque bibendum ligula, quis condimentum libero fermentum in. Aenean erat erat, aliquam in purus a, rhoncus hendrerit tellus. Donec accumsan justo in felis consequat sollicitudin. Fusce luctus mattis nunc vitae maximus. Curabitur semper felis eu magna laoreet scelerisque",
@@ -723,14 +763,14 @@ URL: {{URI}}/api/v1/bootcamps/5ff99342244706c0e4d2b6e4/reviews
 ### 5. {{URI}}/api/v1/reviews/
 
 
-Get all reviews 
+Get all reviews
 
 
 ***Endpoint:***
 
 ```bash
 Method: GET
-Type: 
+Type:
 URL: {{URI}}/api/v1/reviews/
 ```
 
@@ -746,7 +786,7 @@ Get information about a single specefic review
 
 ```bash
 Method: GET
-Type: 
+Type:
 URL: {{URI}}/api/v1/reviews/5ff89c629aa161b862363dba
 ```
 
@@ -770,7 +810,7 @@ URL: {{URI}}/api/v1/reviews/5ff9c3e8648e4ec5a0f6e5ec
 
 ***Body:***
 
-```js        
+```js
 {
     "user": "5ff99a6b46adb7c20e5d8918",
     "bootcamp": "5d725a037b292f5f8ceff787",
@@ -790,7 +830,7 @@ User can delete their own review
 
 ```bash
 Method: DELETE
-Type: 
+Type:
 URL: {{URI}}/api/v1/reviews/5ff9c425648e4ec5a0f6e5ed
 ```
 
@@ -825,7 +865,7 @@ URL: {{URI}}/api/v1/users
 
 ***Body:***
 
-```js        
+```js
 {
     "name": "Sara Kensing",
     "email": "sara@gmail.com",
@@ -847,7 +887,7 @@ Get all users (admin only)
 
 ```bash
 Method: GET
-Type: 
+Type:
 URL: {{URI}}/api/v1/users
 ```
 
@@ -871,7 +911,7 @@ URL: {{URI}}/api/v1/users/5ff756e0948b1392652e7cbd
 
 ***Body:***
 
-```js        
+```js
 {
     "email": "hello@world.com",
     "password": "hello12345",
@@ -891,7 +931,7 @@ Delete any single user (admin only)
 
 ```bash
 Method: DELETE
-Type: 
+Type:
 URL: {{URI}}/api/v1/users/5ff756e0948b1392652e7cbd
 ```
 
@@ -907,7 +947,7 @@ get a single user given id (admin only)
 
 ```bash
 Method: GET
-Type: 
+Type:
 URL: {{URI}}/api/v1/users/5ff77626d520b29b195d31dd
 ```
 
@@ -923,7 +963,7 @@ Get all unverified users
 
 ```bash
 Method: GET
-Type: 
+Type:
 URL: {{URI}}/api/v1/users/unverifiedusers
 ```
 
@@ -939,7 +979,7 @@ Delete all unverified users
 
 ```bash
 Method: DELETE
-Type: 
+Type:
 URL: {{URI}}/api/v1/users/unverifiedusers
 ```
 
@@ -955,7 +995,7 @@ Get all users details (Admin Only)
 
 ```bash
 Method: GET
-Type: 
+Type:
 URL: {{URI}}/api/v1/users
 ```
 
@@ -972,5 +1012,5 @@ URL: {{URI}}/api/v1/users
 
 
 ---
-[Back to top](#devcamper-api)
+[Back to top](#edutech-api)
 > Made with &#9829; by [thedevsaddam](https://github.com/thedevsaddam) | Generated at: 2021-01-09 23:05:44 by [docgen](https://github.com/thedevsaddam/docgen)
